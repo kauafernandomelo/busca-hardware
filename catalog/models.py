@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -168,6 +169,22 @@ class Offer(models.Model):
         blank=True,
         db_index=True,
     )
+    original_price = models.DecimalField(
+        "preço original",
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    discount_pct = models.DecimalField(
+        "desconto (%)",
+        max_digits=5,
+        decimal_places=1,
+        null=True,
+        blank=True,
+        db_index=True,
+    )
+    is_promo = models.BooleanField("em promoção", default=False, db_index=True)
     is_available = models.BooleanField("disponível", default=True)
     last_checked_at = models.DateTimeField("última verificação", null=True, blank=True)
     created_at = models.DateTimeField("criada em", auto_now_add=True)
@@ -232,3 +249,50 @@ class PriceAlert(models.Model):
 
     def __str__(self):
         return f"{self.email} aguardando {self.product} <= R$ {self.target_price}"
+
+
+class PromoSubscription(models.Model):
+    email = models.EmailField("e-mail")
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="promo_subscriptions",
+        verbose_name="categoria",
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="promo_subscriptions",
+        verbose_name="produto",
+    )
+    min_discount = models.PositiveIntegerField(
+        "desconto mínimo (%)", default=10, help_text="Só avisa quando o desconto for igual ou maior."
+    )
+    is_active = models.BooleanField("ativa", default=True)
+    last_notified_at = models.DateTimeField("última notificação", null=True, blank=True)
+    created_at = models.DateTimeField("criada em", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "assinatura de promoções"
+        verbose_name_plural = "assinaturas de promoções"
+        ordering = ["-created_at"]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(category__isnull=False) | models.Q(product__isnull=False),
+                name="subscription_needs_scope",
+            )
+        ]
+
+    def __str__(self):
+        scope = self.product or self.category
+        return f"{self.email} → {scope}"
+
+    def clean(self):
+        if self.category is None and self.product is None:
+            raise ValidationError(
+                "Escolha uma categoria ou um produto para acompanhar."
+            )

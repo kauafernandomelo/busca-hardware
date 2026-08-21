@@ -5,17 +5,32 @@
 
 {% block content %}
 
-<h1 class="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
-    <span>{{ category.icon|default:"📦" }}</span>
-    {{ category.name }}
-</h1>
-<p class="mt-1 text-sm text-slate-500">{{ total }} produto(s) nesta categoria</p>
+<div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+        <h1 class="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
+            <span class="grid h-11 w-11 place-items-center rounded-xl bg-slate-900 text-xl">{{ category.icon|default:"📦" }}</span>
+            {{ category.name }}
+        </h1>
+        <p class="mt-1.5 text-sm text-slate-500">{{ total }} produto(s) nesta categoria</p>
+    </div>
+
+    <form method="get" class="flex items-center gap-2 text-sm">
+        <label for="sort" class="text-slate-500">Ordenar:</label>
+        <select name="ord" id="sort" onchange="this.form.submit()"
+                class="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+            <option value="">Nome (A-Z)</option>
+            <option value="preco_asc" {% if sort == 'preco_asc' %}selected{% endif %}>Menor preço</option>
+            <option value="preco_desc" {% if sort == 'preco_desc' %}selected{% endif %}>Maior preço</option>
+            <option value="desconto" {% if sort == 'desconto' %}selected{% endif %}>Maior desconto</option>
+        </select>
+    </form>
+</div>
 
 {% if subcategories %}
 <div class="mt-4 flex flex-wrap gap-2">
     {% for sub in subcategories %}
     <a href="{{ sub.get_absolute_url }}"
-       class="rounded-full border border-slate-800 bg-slate-900 px-4 py-1.5 text-xs font-semibold text-slate-300 transition hover:border-emerald-500/50 hover:text-emerald-400">
+       class="rounded-full border border-slate-800 bg-slate-900 px-4 py-1.5 text-xs font-semibold text-slate-300 transition hover:border-emerald-500/60 hover:text-emerald-400">
         {{ sub.name }}
     </a>
     {% endfor %}
@@ -44,7 +59,7 @@
 {% endif %}
 
 {% else %}
-<p class="mt-8 rounded-xl border border-dashed border-slate-800 p-8 text-center text-sm text-slate-500">
+<p class="mt-8 rounded-2xl border border-dashed border-slate-800 p-10 text-center text-sm text-slate-500">
     Ainda não há produtos nesta categoria. Rode o comando <code class="text-emerald-400">scrape</code> para importar ofertas.
 </p>
 {% endif %}

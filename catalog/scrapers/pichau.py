@@ -52,9 +52,24 @@ class PichauScraper(BaseScraper):
                 or self.parse_price(entry.get("special_price"))
                 or self.parse_price(prices.get("final_price"))
             )
+            special = self.parse_price(entry.get("special_price"))
+            final = self.parse_price(prices.get("final_price"))
+            is_promo = special is not None and final is not None and special < final
+            original_price = special if is_promo else None
+            image = entry.get("image") or {}
+            image_url = self.clean_name(image.get("url")) or None
             if not name or not url:
                 continue
-            items.append(ScrapedItem(name=name, url=url, price=price))
+            items.append(
+                ScrapedItem(
+                    name=name,
+                    url=url,
+                    price=price,
+                    image_url=image_url,
+                    original_price=original_price,
+                    is_promo=is_promo,
+                )
+            )
 
         return items
 

@@ -6,26 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Busca Hardware — Comparador de preços de informática{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}Compare preços de hardware e informática nas maiores lojas do Brasil. Encontre os menores preços e promoções.{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}Busca Hardware{% endblock %}">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
 </head>
 <body class="flex min-h-full flex-col bg-slate-950 text-slate-100 antialiased">
 
-    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/90 backdrop-blur">
-        <div class="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6">
-            <a href="{% url 'catalog:home' %}" class="flex shrink-0 items-center gap-2 text-lg font-bold tracking-tight">
-                <span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500 text-slate-950">⚡</span>
-                <span>Busca<span class="text-emerald-400">Hardware</span></span>
-            </a>
+    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/95 backdrop-blur">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6">
+            <div class="flex h-16 items-center gap-3">
 
-            <form action="{% url 'catalog:search' %}" method="get" class="hidden flex-1 md:block">
-                <input type="search" name="q" placeholder="Buscar produtos, marcas, categorias..."
-                       class="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none">
+                <a href="{% url 'catalog:home' %}" class="flex shrink-0 items-center gap-2 text-lg font-bold tracking-tight">
+                    <span class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-500 text-lg text-slate-950 shadow-lg shadow-emerald-500/20">⚡</span>
+                    <span>Busca<span class="text-emerald-400">Hardware</span></span>
+                </a>
+
+                <form action="{% url 'catalog:search' %}" method="get" class="ml-2 hidden flex-1 md:block">
+                    <div class="relative">
+                        <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Buscar RTX 4070, Ryzen 5 5600, SSD 1TB..."
+                               class="w-full rounded-xl border border-slate-700 bg-slate-800 py-2.5 pl-10 pr-4 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-500">🔍</span>
+                    </div>
+                </form>
+
+                <nav class="ml-auto hidden items-center gap-1 text-sm font-medium md:flex">
+                    <a href="{% url 'catalog:promotions' %}"
+                       class="rounded-lg px-3 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-emerald-400">🔥 Promoções</a>
+                    <a href="{% url 'catalog:home' %}#categorias"
+                       class="rounded-lg px-3 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-emerald-400">Categorias</a>
+                    <a href="{% url 'catalog:promotions' %}#assinar"
+                       class="ml-2 rounded-lg bg-emerald-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-emerald-400">Criar alerta</a>
+                </nav>
+
+                <input type="checkbox" id="menu-toggle" class="peer hidden">
+                <label for="menu-toggle" class="ml-auto cursor-pointer rounded-lg border border-slate-700 p-2 md:hidden" aria-label="Abrir menu">
+                    <span class="block h-0.5 w-5 bg-slate-300"></span>
+                    <span class="mt-1 block h-0.5 w-5 bg-slate-300"></span>
+                    <span class="mt-1 block h-0.5 w-5 bg-slate-300"></span>
+                </label>
+            </div>
+
+            <form action="{% url 'catalog:search' %}" method="get" class="pb-3 md:hidden">
+                <div class="relative">
+                    <input type="search" name="q" placeholder="Buscar produtos..."
+                           class="w-full rounded-xl border border-slate-700 bg-slate-800 py-2.5 pl-10 pr-4 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none">
+                    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-500">🔍</span>
+                </div>
             </form>
 
-            <nav class="ml-auto hidden items-center gap-6 text-sm font-medium text-slate-300 md:flex">
-                <a href="#" class="hover:text-emerald-400">Promoções</a>
-                <a href="#" class="hover:text-emerald-400">Lojas</a>
-                <a href="#" class="hover:text-emerald-400">Marcas</a>
+            <nav class="hidden border-t border-slate-800 py-3 text-sm font-medium peer-checked:block md:hidden">
+                <a href="{% url 'catalog:promotions' %}" class="block rounded-lg px-3 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-emerald-400">🔥 Promoções</a>
+                <a href="{% url 'catalog:home' %}#categorias" class="block rounded-lg px-3 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-emerald-400">Categorias</a>
+                <a href="{% url 'catalog:promotions' %}#assinar" class="mt-2 block rounded-lg bg-emerald-500 px-3 py-2.5 text-center font-semibold text-slate-950">🔔 Criar alerta</a>
             </nav>
         </div>
     </header>
@@ -34,11 +67,12 @@
         {% if messages %}
         <div class="mb-6 space-y-2">
             {% for message in messages %}
-            <div class="rounded-lg border px-4 py-3 text-sm
+            <div class="flex items-start gap-2 rounded-xl border px-4 py-3 text-sm
                         {% if message.tags == 'success' %}border-emerald-500/40 bg-emerald-500/10 text-emerald-300
                         {% elif message.tags == 'error' %}border-red-500/40 bg-red-500/10 text-red-300
                         {% else %}border-slate-700 bg-slate-800/60 text-slate-200{% endif %}">
-                {{ message }}
+                <span>{% if message.tags == 'success' %}✅{% elif message.tags == 'error' %}⚠️{% else %}ℹ️{% endif %}</span>
+                <p>{{ message }}</p>
             </div>
             {% endfor %}
         </div>
@@ -47,10 +81,55 @@
     </main>
 
     <footer class="border-t border-slate-800 bg-slate-900">
-        <div class="mx-auto max-w-7xl px-4 py-8 text-sm text-slate-400 sm:px-6">
-            <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+            <div class="grid gap-10 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
+
+                <div>
+                    <a href="{% url 'catalog:home' %}" class="flex items-center gap-2 text-lg font-bold tracking-tight">
+                        <span class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-500 text-lg text-slate-950">⚡</span>
+                        <span>Busca<span class="text-emerald-400">Hardware</span></span>
+                    </a>
+                    <p class="mt-3 max-w-sm text-sm leading-relaxed text-slate-400">
+                        Comparamos preços de hardware nas maiores lojas do Brasil e avisamos você quando o que você quer entra em promoção.
+                    </p>
+
+                    <form action="{% url 'catalog:subscribe' %}" method="post" class="mt-5 max-w-md">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <label for="newsletter-email" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Receba promoções por e-mail</label>
+                        <div class="mt-2 flex gap-2">
+                            <input type="email" id="newsletter-email" name="email" required placeholder="seu@email.com"
+                                   class="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none">
+                            <button type="submit" class="shrink-0 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400">
+                                Quero receber
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Navegar</h3>
+                    <ul class="mt-3 space-y-2 text-sm text-slate-400">
+                        <li><a href="{% url 'catalog:home' %}" class="transition hover:text-emerald-400">Início</a></li>
+                        <li><a href="{% url 'catalog:promotions' %}" class="transition hover:text-emerald-400">Promoções</a></li>
+                        <li><a href="{% url 'catalog:search' %}" class="transition hover:text-emerald-400">Todos os produtos</a></li>
+                        <li><a href="/admin/" class="transition hover:text-emerald-400">Painel admin</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Lojas monitoradas</h3>
+                    <ul class="mt-3 space-y-2 text-sm text-slate-400">
+                        <li>KaBuM!</li>
+                        <li>Pichau</li>
+                        <li>Terabyte</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 flex flex-col justify-between gap-3 border-t border-slate-800 pt-6 text-xs text-slate-500 sm:flex-row">
                 <p>© {% now "Y" %} Busca Hardware. Comparador de preços de informática.</p>
-                <p class="text-xs text-slate-500">Preços coletados automaticamente das lojas. Sempre confira o preço final na loja antes de comprar.</p>
+                <p>Preços coletados automaticamente. Sempre confira o preço final na loja antes de comprar.</p>
             </div>
         </div>
     </footer>

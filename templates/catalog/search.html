@@ -4,14 +4,30 @@
 
 {% block content %}
 
-<h1 class="text-2xl font-extrabold tracking-tight">
-    {% if query %}
-    Resultados para <span class="text-emerald-400">“{{ query }}”</span>
-    {% else %}
-    Todos os produtos
-    {% endif %}
-</h1>
-<p class="mt-1 text-sm text-slate-500">{{ total }} produto(s) encontrado(s)</p>
+<div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+        <h1 class="text-2xl font-extrabold tracking-tight">
+            {% if query %}
+            Resultados para <span class="text-emerald-400">“{{ query }}”</span>
+            {% else %}
+            Todos os produtos
+            {% endif %}
+        </h1>
+        <p class="mt-1 text-sm text-slate-500">{{ total }} produto(s) encontrado(s)</p>
+    </div>
+
+    <form method="get" action="{% url 'catalog:search' %}" class="flex items-center gap-2 text-sm">
+        {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+        <label for="sort" class="text-slate-500">Ordenar:</label>
+        <select name="ord" id="sort" onchange="this.form.submit()"
+                class="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+            <option value="">Relevância</option>
+            <option value="preco_asc" {% if sort == 'preco_asc' %}selected{% endif %}>Menor preço</option>
+            <option value="preco_desc" {% if sort == 'preco_desc' %}selected{% endif %}>Maior preço</option>
+            <option value="desconto" {% if sort == 'desconto' %}selected{% endif %}>Maior desconto</option>
+        </select>
+    </form>
+</div>
 
 {% if page_obj.object_list %}
 <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -35,7 +51,7 @@
 {% endif %}
 
 {% else %}
-<p class="mt-8 rounded-xl border border-dashed border-slate-800 p-8 text-center text-sm text-slate-500">
+<p class="mt-8 rounded-2xl border border-dashed border-slate-800 p-10 text-center text-sm text-slate-500">
     Nenhum produto encontrado{% if query %} para “{{ query }}”{% endif %}.
     Tente outro termo, como “RTX 4070” ou “SSD 1TB”.
 </p>

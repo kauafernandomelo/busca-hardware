@@ -38,10 +38,36 @@ class TerabyteScraper(BaseScraper):
                     self.first_text(card, "div.product-item__new-price span")
                 )
 
+            original_price = self.parse_price(
+                self.first_text(card, "div.product-item__old-price del span")
+            )
+            is_promo = (card.attributes.get("data-tss-promo") == "1") or (
+                original_price is not None
+                and price is not None
+                and original_price > price
+            )
+
+            image_el = card.css_first("img.image-thumbnail[src]") or card.css_first(
+                "img[src]"
+            )
+            image_url = self.clean_name(
+                image_el.attributes.get("src") if image_el else None
+            ) or None
+
             brand_name = self.clean_name(card.attributes.get("data-tss-brand")) or None
 
             if not name or not url:
                 continue
-            items.append(ScrapedItem(name=name, url=url, price=price, brand_name=brand_name))
+            items.append(
+                ScrapedItem(
+                    name=name,
+                    url=url,
+                    price=price,
+                    brand_name=brand_name,
+                    image_url=image_url,
+                    original_price=original_price,
+                    is_promo=is_promo,
+                )
+            )
 
         return items

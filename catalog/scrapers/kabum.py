@@ -44,9 +44,20 @@ class KabumScraper(BaseScraper):
             price = self.parse_price(
                 entry.get("priceWithDiscount") or entry.get("price")
             )
+            original_price = self.parse_price(entry.get("oldPrice"))
+            discount_pct = entry.get("discountPercentage") or 0
+            try:
+                is_promo = float(discount_pct) > 0 and (
+                    original_price is None or price is None or original_price > price
+                )
+            except (TypeError, ValueError):
+                is_promo = False
             manufacturer = entry.get("manufacturer") or {}
             brand_name = self.clean_name(manufacturer.get("name")) or None
             category_path = self.clean_name(entry.get("category")) or None
+            image_url = self.clean_name(
+                entry.get("thumbnail") or entry.get("image")
+            ) or None
             if not name or not code:
                 continue
             items.append(
@@ -56,6 +67,9 @@ class KabumScraper(BaseScraper):
                     price=price,
                     brand_name=brand_name,
                     category_path=category_path,
+                    image_url=image_url,
+                    original_price=original_price,
+                    is_promo=is_promo,
                 )
             )
 

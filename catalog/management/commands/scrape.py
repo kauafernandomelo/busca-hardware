@@ -103,12 +103,21 @@ class Command(BaseCommand):
             if item.price is None:
                 continue
 
+            discount_pct = None
+            if item.original_price and item.original_price > item.price:
+                discount_pct = round(
+                    (1 - item.price / item.original_price) * 100, 1
+                )
+
             offer, created = Offer.objects.update_or_create(
                 product=product,
                 store=store,
                 defaults={
                     "url": item.url,
                     "current_price": item.price,
+                    "original_price": item.original_price,
+                    "discount_pct": discount_pct,
+                    "is_promo": bool(item.is_promo or discount_pct),
                     "is_available": True,
                     "last_checked_at": now,
                 },
@@ -134,6 +143,9 @@ class Command(BaseCommand):
     ) -> Product | None:
         existing = Product.objects.filter(name__iexact=item.name).first()
         if existing:
+            if item.image_url and not existing.image_url:
+                existing.image_url = item.image_url
+                existing.save(update_fields=["image_url"])
             return existing
         if dry_run:
             return None
@@ -157,7 +169,10 @@ class Command(BaseCommand):
                 )
 
         product = Product.objects.create(
-            name=item.name, brand=brand, category=product_category
+            name=item.name,
+            brand=brand,
+            category=product_category,
+            image_url=item.image_url or "",
         )
         stats["products"] += 1
         return product

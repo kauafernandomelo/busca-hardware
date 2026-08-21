@@ -37,6 +37,9 @@ class ScrapedItem:
     price: Decimal | None = None
     brand_name: str | None = None
     category_path: str | None = None
+    image_url: str | None = None
+    original_price: Decimal | None = None
+    is_promo: bool = False
 
 
 class ScraperError(Exception):

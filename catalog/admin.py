@@ -7,6 +7,7 @@ from .models import (
     PriceAlert,
     PriceSnapshot,
     Product,
+    PromoSubscription,
     Store,
 )
 
@@ -69,8 +70,17 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Offer)
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ("product", "store", "current_price", "is_available", "last_checked_at")
-    list_filter = ("store", "is_available")
+    list_display = (
+        "product",
+        "store",
+        "current_price",
+        "original_price",
+        "discount_pct",
+        "is_promo",
+        "is_available",
+        "last_checked_at",
+    )
+    list_filter = ("store", "is_available", "is_promo")
     search_fields = ("product__name",)
     inlines = [PriceSnapshotInline]
 
@@ -87,3 +97,10 @@ class PriceAlertAdmin(admin.ModelAdmin):
     list_display = ("email", "product", "target_price", "is_active", "notified_at", "created_at")
     list_filter = ("is_active",)
     search_fields = ("email", "product__name")
+
+
+@admin.register(PromoSubscription)
+class PromoSubscriptionAdmin(admin.ModelAdmin):
+    list_display = ("email", "category", "product", "min_discount", "is_active", "last_notified_at", "created_at")
+    list_filter = ("is_active", "category")
+    search_fields = ("email",)
