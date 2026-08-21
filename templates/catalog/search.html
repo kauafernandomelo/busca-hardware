@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{% if query %}Busca: {{ query }}{% else %}Buscar produtos{% endif %} — Busca Hardware{% endblock %}
+
+{% block content %}
+
+<h1 class="text-2xl font-extrabold tracking-tight">
+    {% if query %}
+    Resultados para <span class="text-emerald-400">“{{ query }}”</span>
+    {% else %}
+    Todos os produtos
+    {% endif %}
+</h1>
+<p class="mt-1 text-sm text-slate-500">{{ total }} produto(s) encontrado(s)</p>
+
+{% if page_obj.object_list %}
+<div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {% for product in page_obj.object_list %}
+        {% include "catalog/_product_card.html" %}
+    {% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<nav class="mt-8 flex items-center justify-center gap-3 text-sm">
+    {% if page_obj.has_previous %}
+    <a href="?{% if params_without_page %}{{ params_without_page }}&{% endif %}page={{ page_obj.previous_page_number }}"
+       class="rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">← Anterior</a>
+    {% endif %}
+    <span class="text-slate-500">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?{% if params_without_page %}{{ params_without_page }}&{% endif %}page={{ page_obj.next_page_number }}"
+       class="rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">Próxima →</a>
+    {% endif %}
+</nav>
+{% endif %}
+
+{% else %}
+<p class="mt-8 rounded-xl border border-dashed border-slate-800 p-8 text-center text-sm text-slate-500">
+    Nenhum produto encontrado{% if query %} para “{{ query }}”{% endif %}.
+    Tente outro termo, como “RTX 4070” ou “SSD 1TB”.
+</p>
+{% endif %}
+
+{% endblock %}

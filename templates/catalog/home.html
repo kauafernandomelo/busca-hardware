@@ -11,7 +11,7 @@
     <p class="mt-4 max-w-xl text-slate-400">
         Encontre os menores preços e as melhores promoções de componentes, periféricos, monitores e notebooks — tudo em um só lugar.
     </p>
-    <form action="#" method="get" class="mt-6 flex max-w-xl gap-2">
+    <form action="{% url 'catalog:search' %}" method="get" class="mt-6 flex max-w-xl gap-2">
         <input type="search" name="q" placeholder="Ex.: RTX 4070, Ryzen 5 5600, SSD 1TB..."
                class="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none">
         <button type="submit" class="shrink-0 rounded-lg bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400">
@@ -25,7 +25,7 @@
     {% if root_categories %}
     <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {% for category in root_categories %}
-        <a href="#" class="group rounded-xl border border-slate-800 bg-slate-900 p-4 transition hover:border-emerald-500/50 hover:bg-slate-800/60">
+        <a href="{% url 'catalog:category' category.slug %}" class="group rounded-xl border border-slate-800 bg-slate-900 p-4 transition hover:border-emerald-500/50 hover:bg-slate-800/60">
             <div class="text-2xl">{{ category.icon|default:"📦" }}</div>
             <div class="mt-2 font-semibold group-hover:text-emerald-400">{{ category.name }}</div>
         </a>
@@ -43,26 +43,7 @@
     {% if recent_products %}
     <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {% for product in recent_products %}
-        <article class="flex flex-col overflow-hidden rounded-xl border border-slate-800 bg-slate-900 transition hover:border-emerald-500/50">
-            <div class="grid h-40 place-items-center bg-slate-800/50 text-4xl text-slate-600">
-                🖥️
-            </div>
-            <div class="flex flex-1 flex-col gap-1 p-4">
-                <span class="text-xs uppercase tracking-wide text-slate-500">{{ product.category.name }}</span>
-                <h3 class="line-clamp-2 text-sm font-semibold leading-snug">{{ product.name }}</h3>
-                {% with offer=product.best_offer %}
-                {% if offer %}
-                <div class="mt-auto pt-2">
-                    <span class="text-xs text-slate-500">a partir de</span>
-                    <div class="text-lg font-bold text-emerald-400">R$ {{ offer.current_price }}</div>
-                    <div class="text-xs text-slate-500">em {{ offer.store.name }}</div>
-                </div>
-                {% else %}
-                <div class="mt-auto pt-2 text-xs text-slate-500">sem ofertas disponíveis</div>
-                {% endif %}
-                {% endwith %}
-            </div>
-        </article>
+            {% include "catalog/_product_card.html" %}
         {% endfor %}
     </div>
     {% else %}

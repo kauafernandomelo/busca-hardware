@@ -1,0 +1,19 @@
+{% with offer=product.best_offer %}
+<a href="{{ product.get_absolute_url }}"
+   class="group flex flex-col overflow-hidden rounded-xl border border-slate-800 bg-slate-900 transition hover:border-emerald-500/50">
+    <div class="grid h-40 place-items-center bg-slate-800/50 text-4xl text-slate-600">🖥️</div>
+    <div class="flex flex-1 flex-col gap-1 p-4">
+        <span class="text-xs uppercase tracking-wide text-slate-500">{{ product.category.name }}</span>
+        <h3 class="line-clamp-2 text-sm font-semibold leading-snug group-hover:text-emerald-400">{{ product.name }}</h3>
+        {% if offer %}
+        <div class="mt-auto pt-2">
+            <span class="text-xs text-slate-500">a partir de</span>
+            <div class="text-lg font-bold text-emerald-400">R$ {{ offer.current_price|floatformat:2 }}</div>
+            <div class="text-xs text-slate-500">em {{ offer.store.name }}</div>
+        </div>
+        {% else %}
+        <div class="mt-auto pt-2 text-xs text-slate-500">sem ofertas disponíveis</div>
+        {% endif %}
+    </div>
+</a>
+{% endwith %}

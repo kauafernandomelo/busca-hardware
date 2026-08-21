@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 
@@ -84,6 +85,9 @@ class Category(models.Model):
             self.slug = slug
         super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse("catalog:category", args=[self.slug])
+
 
 class Product(models.Model):
     name = models.CharField("nome", max_length=255)
@@ -127,6 +131,9 @@ class Product(models.Model):
                 slug = f"{base_slug[:280 - len(suffix)]}{suffix}"
             self.slug = slug
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("catalog:product", args=[self.slug])
 
     @property
     def best_offer(self):
