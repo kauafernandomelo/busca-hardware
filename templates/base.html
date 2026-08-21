@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Busca Hardware — Comparador de preços de informática{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Compare preços de hardware e informática nas maiores lojas do Brasil. Encontre os menores preços e promoções.{% endblock %}">
+    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
+</head>
+<body class="flex min-h-full flex-col bg-slate-950 text-slate-100 antialiased">
+
+    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/90 backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6">
+            <a href="{% url 'catalog:home' %}" class="flex shrink-0 items-center gap-2 text-lg font-bold tracking-tight">
+                <span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500 text-slate-950">⚡</span>
+                <span>Busca<span class="text-emerald-400">Hardware</span></span>
+            </a>
+
+            <form action="#" method="get" class="hidden flex-1 md:block">
+                <input type="search" name="q" placeholder="Buscar produtos, marcas, categorias..."
+                       class="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none">
+            </form>
+
+            <nav class="ml-auto hidden items-center gap-6 text-sm font-medium text-slate-300 md:flex">
+                <a href="#" class="hover:text-emerald-400">Promoções</a>
+                <a href="#" class="hover:text-emerald-400">Lojas</a>
+                <a href="#" class="hover:text-emerald-400">Marcas</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="border-t border-slate-800 bg-slate-900">
+        <div class="mx-auto max-w-7xl px-4 py-8 text-sm text-slate-400 sm:px-6">
+            <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                <p>© {% now "Y" %} Busca Hardware. Comparador de preços de informática.</p>
+                <p class="text-xs text-slate-500">Preços coletados automaticamente das lojas. Sempre confira o preço final na loja antes de comprar.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

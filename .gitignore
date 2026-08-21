@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtualenv
+.venv/
+venv/
+
+# Django
+db.sqlite3
+staticfiles/
+media/
+
+# Node / Tailwind theme
+theme/static_src/node_modules/
+theme/static/css/dist/
+
+# Env & IDE
+.env
+.vscode/
+.idea/
+
+# Checkpoints por fase
+checkpoints/
+checkpoint.ps1
+
+# OS
+Thumbs.db
+.DS_Store
