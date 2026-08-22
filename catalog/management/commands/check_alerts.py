@@ -59,7 +59,7 @@ class Command(BaseCommand):
         send_mail(
             subject=subject,
             message=message,
-            from_email="alertas@buscahardware.local",
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[alert.email],
             connection=connection,
         )

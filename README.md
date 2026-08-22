@@ -107,6 +107,17 @@ Configuração única necessária:
 
 Opcional: crie a variável de repositório `SITE_URL` com a URL pública do site para os links dos e-mails de alerta.
 
+### 3. E-mails (SMTP)
+
+Sem configuração, os e-mails são apenas impressos no log (backend console) — nada quebra. Para envio real, use qualquer provedor SMTP (Brevo, Mailgun, Gmail com senha de app etc.):
+
+1. No GitHub: *Settings* → *Secrets and variables* → *Actions*:
+   - **Secret** `EMAIL_HOST_PASSWORD`: a senha/SMTP key do provedor
+   - **Variables**: `EMAIL_HOST` (ex.: `smtp-relay.brevo.com`), `EMAIL_HOST_USER`, e se quiser `EMAIL_PORT` (padrão 587), `EMAIL_USE_TLS` (padrão 1), `DEFAULT_FROM_EMAIL`
+2. Rode o workflow manualmente e confira nos logs os `[ALERTA]`/`[PROMO]` enviados
+
+No dev, as mesmas variáveis podem ir no `.env`; sem `EMAIL_HOST`, o Django imprime os e-mails no terminal.
+
 ### Sobre o Pichau
 
 O WAF do Pichau bloqueia IPs de datacenter (GitHub Actions) mesmo com TLS de navegador — só passa por IP residencial. Por isso o workflow usa a variável de repositório `SCRAPER_STORES` (padrão: `kabum,terabyte`). Para religar o Pichau: contrate um proxy residencial barato (ou registre um runner self-hosted na sua máquina), aponte o scraper para ele e mude a variável para `kabum,pichau,terabyte`.
@@ -119,6 +130,12 @@ O WAF do Pichau bloqueia IPs de datacenter (GitHub Actions) mesmo com TLS de nav
 | `DJANGO_DEBUG` | .env / Render | `1` só no dev; default fechado em `0` |
 | `DATABASE_URL` | secret do Actions / Render | String PostgreSQL (fallback: SQLite) |
 | `SITE_URL` | vars do Actions / opcional | URL base usada nos links dos alertas |
+| `EMAIL_HOST` | vars do Actions / .env | Sem esta var, e-mails vão para o console/log |
+| `EMAIL_PORT` | vars do Actions / .env | Porta SMTP (padrão 587) |
+| `EMAIL_HOST_USER` | vars do Actions / .env | Usuário SMTP |
+| `EMAIL_HOST_PASSWORD` | secret do Actions / .env | Senha SMTP (nunca versionar) |
+| `EMAIL_USE_TLS` / `EMAIL_USE_SSL` | vars do Actions / .env | Padrão: TLS ligado, SSL desligado |
+| `DEFAULT_FROM_EMAIL` | vars do Actions / .env | Remetente dos alertas e promoções |
 | `NPM_BIN_PATH` | .env (Windows) | Caminho do npm quando fora do PATH |
 
 ## Estrutura
@@ -144,7 +161,7 @@ render.yaml            # Infra como código: web service + PostgreSQL
 
 - [x] Deploy com PostgreSQL (Render, Gunicorn + Whitenoise)
 - [x] Coleta agendada sem servidor próprio (GitHub Actions a cada 6h)
-- [ ] Envio real de e-mails (SMTP) para alertas e promoções
+- [x] Envio real de e-mails (SMTP) para alertas e promoções
 - [ ] API REST pública
 - [ ] Comparação de parcelamento e preço à vista
 

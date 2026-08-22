@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 
+from django.conf import settings
 from django.core.mail import get_connection, send_mail
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -99,7 +100,7 @@ class Command(BaseCommand):
         send_mail(
             subject=subject,
             message=message,
-            from_email="promocoes@buscahardware.local",
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[sub.email],
             connection=connection,
         )

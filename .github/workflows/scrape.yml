@@ -17,6 +17,12 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DJANGO_DEBUG: "0"
       SITE_URL: ${{ vars.SITE_URL }}
+      EMAIL_HOST: ${{ vars.EMAIL_HOST }}
+      EMAIL_PORT: ${{ vars.EMAIL_PORT }}
+      EMAIL_HOST_USER: ${{ vars.EMAIL_HOST_USER }}
+      EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+      EMAIL_USE_TLS: ${{ vars.EMAIL_USE_TLS || '1' }}
+      DEFAULT_FROM_EMAIL: ${{ vars.DEFAULT_FROM_EMAIL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
