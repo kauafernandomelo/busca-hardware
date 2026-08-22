@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
 </head>
-<body class="flex min-h-full flex-col bg-neutral-100 text-neutral-800 antialiased">
+<body class="flex min-h-full flex-col bg-page text-neutral-800 antialiased">
 
     <header class="sticky top-0 z-40 shadow-lg">
         <!-- Nível 1: marca, busca e ações (grafite estilo Terabyte) -->
@@ -75,22 +75,28 @@
 
         <!-- Nível 2: barra de departamentos -->
         {% if nav_categories %}
-        <nav class="hidden border-b-2 border-brand bg-ink-900 md:block" aria-label="Categorias">
+        <nav class="hidden bg-black md:block" aria-label="Categorias">
             <div class="mx-auto max-w-7xl px-4 sm:px-6">
-                <ul class="flex h-11 items-center gap-1 overflow-x-auto text-sm font-medium text-neutral-300">
+                <ul class="flex h-12 items-stretch gap-1 overflow-x-auto text-sm font-bold uppercase tracking-wide text-neutral-200">
                     <li>
-                        <a href="{% url 'catalog:promotions' %}" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm bg-brand px-3 py-1.5 font-bold text-white transition hover:bg-brand-dark">
+                        <a href="{% url 'catalog:search' %}" class="flex items-center gap-2.5 bg-white/10 px-5 transition hover:bg-brand hover:text-white">
+                            <span aria-hidden="true"><span class="block h-0.5 w-5 bg-current"></span><span class="mt-1 block h-0.5 w-5 bg-current"></span><span class="mt-1 block h-0.5 w-3 bg-current"></span></span>
+                            Departamentos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'catalog:promotions' %}" class="flex items-center gap-1.5 whitespace-nowrap bg-brand px-4 text-white transition hover:bg-brand-dark">
                             {% icon "flame" "h-4 w-4" %} Ofertas
                         </a>
                     </li>
                     {% for category in nav_categories %}
                     <li>
                         <a href="{{ category.get_absolute_url }}"
-                           class="whitespace-nowrap rounded-sm px-3 py-1.5 transition hover:bg-white/10 hover:text-white">{{ category.name }}</a>
+                           class="flex items-center whitespace-nowrap px-3.5 transition hover:bg-white/10 hover:text-white">{{ category.name }}</a>
                     </li>
                     {% endfor %}
                     <li>
-                        <a href="{% url 'catalog:search' %}" class="ml-auto inline-flex items-center gap-1 whitespace-nowrap rounded-sm px-3 py-1.5 text-neutral-400 transition hover:bg-white/10 hover:text-white">
+                        <a href="{% url 'catalog:search' %}" class="ml-auto flex items-center gap-1 whitespace-nowrap px-3.5 text-neutral-400 transition hover:bg-white/10 hover:text-white">
                             Ver tudo {% icon "arrow-right" "h-3.5 w-3.5" %}
                         </a>
                     </li>
