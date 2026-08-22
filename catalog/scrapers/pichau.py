@@ -12,6 +12,7 @@ class PichauScraper(BaseScraper):
     store_slug = "pichau"
     store_name = "Pichau"
     website_url = "https://www.pichau.com.br"
+    impersonate = "chrome"
 
     def search(self, query: str, page: int = 1) -> list[ScrapedItem]:
         payload = self.fetch(

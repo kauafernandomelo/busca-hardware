@@ -9,6 +9,23 @@ from urllib.parse import quote, urljoin
 import requests
 from selectolax.parser import HTMLParser
 
+try:
+    from curl_cffi import requests as curl_requests
+
+    try:
+        _CURL_ERROR: type[Exception] | None = (
+            curl_requests.exceptions.RequestException  # type: ignore[attr-defined]
+        )
+    except AttributeError:
+        _CURL_ERROR = getattr(curl_requests, "RequestsError", None)
+except ImportError:
+    curl_requests = None
+    _CURL_ERROR = None
+
+_RETRYABLE_ERRORS: tuple[type[Exception], ...] = (requests.RequestException,) + (
+    (_CURL_ERROR,) if _CURL_ERROR is not None else ()
+)
+
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
@@ -50,10 +67,14 @@ class BaseScraper:
     store_slug = ""
     store_name = ""
     website_url = ""
+    impersonate: str | None = None
 
     def __init__(self):
-        self.session = requests.Session()
-        self.session.headers.update(BASE_HEADERS)
+        if self.impersonate and curl_requests is not None:
+            self.session = curl_requests.Session(impersonate=self.impersonate)
+        else:
+            self.session = requests.Session()
+            self.session.headers.update(BASE_HEADERS)
         self.session.headers["Referer"] = self.website_url
 
     def fetch(self, url: str, *, retries: int = 3, headers: dict | None = None) -> str:
@@ -68,7 +89,7 @@ class BaseScraper:
                     time.sleep(3 * (attempt + 1))
                     continue
                 break
-            except requests.RequestException as exc:
+            except _RETRYABLE_ERRORS as exc:
                 last_error = exc
                 time.sleep(3 * (attempt + 1))
         raise ScraperError(f"Falha ao acessar {url}: {last_error}")
