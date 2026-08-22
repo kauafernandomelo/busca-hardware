@@ -107,7 +107,7 @@ class Product(models.Model):
         related_name="products",
         verbose_name="categoria",
     )
-    image_url = models.URLField("imagem", blank=True)
+    image_url = models.URLField("imagem", max_length=500, blank=True)
     specs = models.JSONField("especificações", default=dict, blank=True)
     is_active = models.BooleanField("ativo", default=True)
     created_at = models.DateTimeField("criado em", auto_now_add=True)
@@ -160,7 +160,7 @@ class Offer(models.Model):
     store = models.ForeignKey(
         Store, on_delete=models.CASCADE, related_name="offers", verbose_name="loja"
     )
-    url = models.URLField("URL da oferta")
+    url = models.URLField("URL da oferta", max_length=500)
     current_price = models.DecimalField(
         "preço atual",
         max_digits=12,
