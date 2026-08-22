@@ -54,7 +54,7 @@
 </div>
 
 {% if page_obj.object_list %}
-<div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+<div class="stagger-fade mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
     {% for product in page_obj.object_list %}
         {% include "catalog/_product_card.html" %}
     {% endfor %}

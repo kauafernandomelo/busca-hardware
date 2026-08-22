@@ -1,7 +1,7 @@
 {% load catalog_extras %}
 {% with offer=product.best_offer %}
 <a href="{{ product.get_absolute_url }}"
-   class="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
+   class="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition duration-300 ease-out hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl active:translate-y-0">
     <div class="relative grid h-44 place-items-center overflow-hidden bg-white">
         {% if product.image_url %}
         <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy"

@@ -38,7 +38,7 @@
 </section>
 
 {% if page_obj.object_list %}
-<div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+<div class="stagger-fade mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
     {% for offer in page_obj.object_list %}
     <a href="{{ offer.product.get_absolute_url }}"
        class="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-red-300 hover:shadow-lg">
