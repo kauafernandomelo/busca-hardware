@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 */6 * * *"
   workflow_dispatch:
+    inputs:
+      test_email:
+        description: "E-mail para teste de SMTP (opcional; envia antes da coleta)"
+        required: false
+        type: string
 
 concurrency:
   group: coleta-precos
@@ -45,6 +50,10 @@ jobs:
 
       - name: Aplicar migracoes
         run: python manage.py migrate --noinput
+
+      - name: Teste de SMTP (opcional)
+        if: ${{ inputs.test_email != '' }}
+        run: python manage.py sendtestemail ${{ inputs.test_email }}
 
       - name: Coletar catalogo e precos (lojas configuradas)
         run: |
