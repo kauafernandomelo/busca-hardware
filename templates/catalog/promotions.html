@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load catalog_extras %}
 
 {% block title %}Promoções de hardware — Busca Hardware{% endblock %}
 {% block meta_description %}As maiores promoções de hardware nas lojas KaBuM!, Pichau e Terabyte, atualizadas automaticamente.{% endblock %}
@@ -7,14 +8,14 @@
 
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-extrabold tracking-tight">🔥 Promoções</h1>
-        <p class="mt-1 text-sm text-slate-500">{{ total }} oferta(ões) com desconto detectado nas lojas monitoradas.</p>
+        <h1 class="inline-flex items-center gap-2 text-3xl font-extrabold tracking-tight">{% icon "flame" "h-7 w-7 text-red-400" %} Promoções</h1>
+        <p class="mt-1 text-sm text-slate-500">{{ total }} oferta(s) com desconto detectado nas lojas monitoradas.</p>
     </div>
     <span class="rounded-full border border-red-500/40 bg-red-500/10 px-4 py-1.5 text-xs font-bold text-red-300">atualizado a cada coleta</span>
 </div>
 
-<section id="assinar" class="mt-6 scroll-mt-24 rounded-2xl border border-emerald-900/60 bg-gradient-to-br from-slate-900 to-emerald-950/30 p-6">
-    <h2 class="flex items-center gap-2 font-bold text-emerald-300">📧 Receba promoções no seu e-mail</h2>
+<section id="assinar" class="mt-6 scroll-mt-24 rounded-2xl border border-emerald-900/60 bg-slate-900 p-6">
+    <h2 class="flex items-center gap-2 font-bold text-emerald-300">{% icon "mail" "h-5 w-5" %} Receba promoções no seu e-mail</h2>
     <p class="mt-1 text-sm text-slate-400">Escolha uma categoria e o desconto mínimo. Avisamos quando surgir algo do seu interesse.</p>
     <form method="post" action="{% url 'catalog:subscribe' %}" class="mt-4 grid gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1fr)_auto] sm:items-start">
         {% csrf_token %}
@@ -38,20 +39,23 @@
             <img src="{{ offer.product.image_url }}" alt="{{ offer.product.name }}" loading="lazy"
                  class="h-full w-full object-contain p-4 transition duration-300 group-hover:scale-105">
             {% else %}
-            <span class="text-5xl text-slate-700">🖥️</span>
+            <span class="text-slate-700">{% icon "monitor" "h-12 w-12" %}</span>
             {% endif %}
             <span class="absolute left-3 top-3 rounded-lg bg-red-500 px-2 py-1 text-xs font-extrabold text-white shadow">
                 -{{ offer.discount_pct|floatformat:0 }}%
             </span>
         </div>
         <div class="flex flex-1 flex-col p-4">
-            <span class="text-[11px] uppercase tracking-wide text-slate-500">{{ offer.product.category.name }}</span>
+            <div class="flex items-center justify-between gap-2 text-[11px] uppercase tracking-wide text-slate-500">
+                <span class="truncate">{{ offer.product.category.name }}</span>
+                <span class="shrink-0 rounded-md border px-1.5 py-0.5 font-bold normal-case {{ offer.store|store_badge }}">{{ offer.store.name }}</span>
+            </div>
             <h3 class="mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug group-hover:text-emerald-400">{{ offer.product.name }}</h3>
             <div class="mt-auto pt-3">
                 <div class="flex items-baseline gap-2">
-                    <span class="text-lg font-extrabold text-emerald-400">R$ {{ offer.current_price|floatformat:2 }}</span>
+                    <span class="text-lg font-extrabold text-emerald-400">{{ offer.current_price|brl }}</span>
                     {% if offer.original_price %}
-                    <span class="text-xs text-slate-500 line-through">R$ {{ offer.original_price|floatformat:2 }}</span>
+                    <span class="text-xs text-slate-500 line-through">{{ offer.original_price|brl }}</span>
                     {% endif %}
                 </div>
                 <div class="mt-0.5 text-xs text-slate-500">à vista em {{ offer.store.name }}</div>
@@ -62,20 +66,20 @@
 </div>
 
 {% if page_obj.has_other_pages %}
-<nav class="mt-8 flex items-center justify-center gap-3 text-sm">
+<nav class="mt-8 flex items-center justify-center gap-3 text-sm" aria-label="Paginação">
     {% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}" class="rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">← Anterior</a>
+    <a href="?page={{ page_obj.previous_page_number }}" class="inline-flex items-center gap-1 rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">{% icon "chevron-left" "h-4 w-4" %} Anterior</a>
     {% endif %}
     <span class="text-slate-500">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
     {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}" class="rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">Próxima →</a>
+    <a href="?page={{ page_obj.next_page_number }}" class="inline-flex items-center gap-1 rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">Próxima {% icon "chevron-right" "h-4 w-4" %}</a>
     {% endif %}
 </nav>
 {% endif %}
 
 {% else %}
 <p class="mt-8 rounded-2xl border border-dashed border-slate-800 p-10 text-center text-sm text-slate-500">
-    Nenhuma promoção detectada ainda. Rode o <code class="text-emerald-400">scrape</code> para coletar ofertas.
+    Nenhuma promoção detectada ainda. Rode o <code class="text-emerald-400">import_catalog</code> para coletar ofertas.
 </p>
 {% endif %}
 

@@ -1,3 +1,4 @@
+{% load catalog_extras %}
 {% with offer=product.best_offer %}
 <a href="{{ product.get_absolute_url }}"
    class="group flex flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 transition hover:-translate-y-0.5 hover:border-emerald-500/60 hover:shadow-xl hover:shadow-emerald-500/5">
@@ -6,7 +7,7 @@
         <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy"
              class="h-full w-full object-contain p-4 transition duration-300 group-hover:scale-105">
         {% else %}
-        <span class="text-5xl text-slate-700">🖥️</span>
+        <span class="text-slate-700">{% icon "monitor" "h-12 w-12" %}</span>
         {% endif %}
         {% if product.max_discount %}
         <span class="absolute left-3 top-3 rounded-lg bg-red-500 px-2 py-1 text-xs font-extrabold text-white shadow">
@@ -18,7 +19,7 @@
     <div class="flex flex-1 flex-col p-4">
         <div class="flex items-center justify-between gap-2 text-[11px] uppercase tracking-wide text-slate-500">
             <span class="truncate">{{ product.brand.name|default:product.category.name }}</span>
-            {% if product.n_offers %}<span class="shrink-0">em {{ product.n_offers }} loja{{ product.n_offers|pluralize }}</span>{% endif %}
+            {% if offer %}<span class="shrink-0 rounded-md border px-1.5 py-0.5 font-bold {{ offer.store|store_badge }}">{{ offer.store.name }}</span>{% endif %}
         </div>
 
         <h3 class="mt-1.5 line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug group-hover:text-emerald-400">{{ product.name }}</h3>
@@ -26,9 +27,9 @@
         <div class="mt-auto pt-3">
             {% if offer %}
             <div class="flex items-baseline gap-2">
-                <span class="text-lg font-extrabold text-emerald-400">R$ {{ offer.current_price|floatformat:2 }}</span>
+                <span class="text-lg font-extrabold text-emerald-400">{{ offer.current_price|brl }}</span>
                 {% if offer.original_price and offer.original_price > offer.current_price %}
-                <span class="text-xs text-slate-500 line-through">R$ {{ offer.original_price|floatformat:2 }}</span>
+                <span class="text-xs text-slate-500 line-through">{{ offer.original_price|brl }}</span>
                 {% endif %}
             </div>
             <div class="mt-0.5 text-xs text-slate-500">à vista em {{ offer.store.name }}</div>

@@ -1,3 +1,6 @@
+from decimal import Decimal
+from json import dumps as json_dumps
+
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Count, Max, Min, Q
@@ -99,7 +102,7 @@ def product_detail(request, slug):
     best_offer = offers[0] if offers else None
 
     history = build_price_history(product)
-    spark_points = build_sparkline(history)
+    spark = build_sparkline(history)
     history_min = min((h["price"] for h in history), default=None)
     is_record = bool(
         best_offer and history_min is not None and best_offer.current_price <= history_min
@@ -130,10 +133,11 @@ def product_detail(request, slug):
         "alert_form": alert_form,
         "promo_form": PromoSubscriptionForm(initial={"product": product.pk}),
         "history": history,
-        "spark_points": spark_points,
+        "spark": spark,
         "history_min": history_min,
         "is_record": is_record,
         "breadcrumb_name": Truncator(product.name).chars(48),
+        "schema_json": build_schema_json(product, best_offer),
     }
     return render(request, "catalog/product_detail.html", context)
 
@@ -240,16 +244,19 @@ def build_price_history(product):
 
 
 def build_sparkline(history, width=SPARK_WIDTH, height=SPARK_HEIGHT, pad=SPARK_PAD):
+    """Pontos da linha e da área preenchida do gráfico de histórico."""
     if not history:
-        return ""
+        return {"line": "", "area": ""}
     prices = [float(h["price"]) for h in history]
     low, high = min(prices), max(prices)
     if high == low:
         high = low + 1
+    bottom = height - pad
     if len(prices) == 1:
         x = width / 2
         y = height - pad - (height - 2 * pad) * ((prices[0] - low) / (high - low))
-        return f"{x:.1f},{y:.1f} {x:.1f},{y:.1f}"
+        point = f"{x:.1f},{y:.1f}"
+        return {"line": f"{point} {point}", "area": ""}
     span_x = width - 2 * pad
     span_y = height - 2 * pad
     points = []
@@ -257,4 +264,32 @@ def build_sparkline(history, width=SPARK_WIDTH, height=SPARK_HEIGHT, pad=SPARK_P
         x = pad + span_x * i / (len(prices) - 1)
         y = height - pad - span_y * ((price - low) / (high - low))
         points.append(f"{x:.1f},{y:.1f}")
-    return " ".join(points)
+    line = " ".join(points)
+    area = f"{points[0].split(',')[0]},{bottom} {line} {points[-1].split(',')[0]},{bottom}"
+    return {"line": line, "area": area}
+
+
+def build_schema_json(product, best_offer):
+    """JSON-LD (schema.org) com dados estruturados do produto/oferta."""
+    schema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "category": product.category.name,
+        "brand": {"@type": "Brand", "name": product.brand.name} if product.brand else None,
+        "image": [product.image_url] if product.image_url else None,
+    }
+    if best_offer:
+        schema["offers"] = {
+            "@type": "Offer",
+            "url": best_offer.url,
+            "priceCurrency": "BRL",
+            "price": str(Decimal(best_offer.current_price).quantize(Decimal("0.01"))),
+            "availability": (
+                "https://schema.org/InStock"
+                if best_offer.is_available
+                else "https://schema.org/OutOfStock"
+            ),
+            "seller": {"@type": "Organization", "name": best_offer.store.name},
+        }
+    return json_dumps({k: v for k, v in schema.items() if v is not None}, ensure_ascii=False)

@@ -1,11 +1,14 @@
 {% extends "base.html" %}
+{% load catalog_extras %}
 
 {% block title %}{{ product.name }} — Busca Hardware{% endblock %}
 {% block meta_description %}Compare ofertas de {{ product.name }} nas maiores lojas do Brasil e veja o histórico de preços.{% endblock %}
 
 {% block content %}
 
-<nav class="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+<script type="application/ld+json">{{ schema_json|safe }}</script>
+
+<nav class="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500" aria-label="Trilha de navegação">
     <a href="{% url 'catalog:home' %}" class="hover:text-emerald-400">Início</a>
     <span>/</span>
     <a href="{{ product.category.get_absolute_url }}" class="hover:text-emerald-400">{{ product.category.name }}</a>
@@ -13,14 +16,14 @@
     <span class="text-slate-300">{{ breadcrumb_name }}</span>
 </nav>
 
-<div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+<div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
 
     <div class="flex flex-col gap-4">
         <div class="grid aspect-square place-items-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
             {% if product.image_url %}
             <img src="{{ product.image_url }}" alt="{{ product.name }}" class="h-full w-full object-contain p-8">
             {% else %}
-            <span class="text-8xl text-slate-700">🖥️</span>
+            <span class="text-slate-700">{% icon "monitor" "h-24 w-24" %}</span>
             {% endif %}
         </div>
 
@@ -41,7 +44,7 @@
 
     <div class="flex flex-col gap-5">
 
-        <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+        <section class="rounded-2xl border border-emerald-800/40 bg-slate-900 p-6 shadow-xl shadow-black/20 lg:sticky lg:top-20" aria-label="Melhor oferta">
             {% if product.brand %}
             <a href="{% url 'catalog:search' %}?q={{ product.brand.name|urlencode }}" class="text-xs font-bold uppercase tracking-widest text-emerald-400 hover:underline">{{ product.brand.name }}</a>
             {% endif %}
@@ -49,30 +52,36 @@
 
             {% if is_record %}
             <span class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-300">
-                🏆 Melhor preço desde o primeiro registro
+                {% icon "trophy" "h-3.5 w-3.5" %} Melhor preço desde o primeiro registro
             </span>
             {% endif %}
 
             {% if best_offer %}
             <div class="mt-4 flex flex-wrap items-end gap-x-3 gap-y-1">
                 <span class="text-sm text-slate-400">a partir de</span>
-                <span class="text-4xl font-extrabold tracking-tight text-emerald-400">R$ {{ best_offer.current_price|floatformat:2 }}</span>
+                <span class="text-4xl font-extrabold tracking-tight text-emerald-400">{{ best_offer.current_price|brl }}</span>
                 {% if best_offer.original_price and best_offer.original_price > best_offer.current_price %}
-                <span class="pb-1 text-base text-slate-500 line-through">R$ {{ best_offer.original_price|floatformat:2 }}</span>
+                <span class="pb-1 text-base text-slate-500 line-through">{{ best_offer.original_price|brl }}</span>
                 {% if best_offer.discount_pct %}<span class="mb-1 rounded-md bg-red-500/90 px-1.5 py-0.5 text-xs font-extrabold text-white">-{{ best_offer.discount_pct|floatformat:0 }}%</span>{% endif %}
                 {% endif %}
-                <span class="pb-1 text-sm text-slate-400">em {{ best_offer.store.name }}</span>
+            </div>
+            <div class="mt-2 flex items-center gap-2 text-sm">
+                <span class="text-slate-400">menor preço na</span>
+                <span class="inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold {{ best_offer.store|store_badge }}">{{ best_offer.store.name }}</span>
             </div>
             <a href="{{ best_offer.url }}" target="_blank" rel="noopener nofollow"
-               class="mt-4 inline-block rounded-xl bg-emerald-500 px-7 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400">
-                Ver oferta na {{ best_offer.store.name }} →
+               class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-7 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400 sm:w-auto">
+                Ver oferta na {{ best_offer.store.name }} {% icon "external-link" "h-4 w-4" %}
             </a>
+            {% if offers|length > 1 %}
+            <p class="mt-2.5 text-xs text-slate-500">disponível em {{ offers|length }} lojas — compare abaixo</p>
+            {% endif %}
             {% else %}
             <p class="mt-4 rounded-xl border border-dashed border-slate-800 p-4 text-sm text-slate-500">
                 Nenhuma oferta disponível no momento.
             </p>
             {% endif %}
-        </div>
+        </section>
 
         {% if offer_bars %}
         <section class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
@@ -82,16 +91,16 @@
                 <li>
                     <a href="{{ bar.offer.url }}" target="_blank" rel="noopener nofollow" class="group block">
                         <div class="flex items-center justify-between gap-3 text-sm">
-                            <span class="font-semibold group-hover:text-emerald-400">
-                                {{ bar.offer.store.name }}
-                                {% if bar.is_best %}<span class="ml-1 rounded bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-extrabold uppercase text-emerald-400">melhor</span>{% endif %}
+                            <span class="inline-flex items-center gap-2 font-semibold group-hover:text-emerald-400">
+                                <span class="rounded-md border px-1.5 py-0.5 text-xs font-bold {{ bar.offer.store|store_badge }}">{{ bar.offer.store.name }}</span>
+                                {% if bar.is_best %}<span class="rounded bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-extrabold uppercase text-emerald-400">melhor</span>{% endif %}
                             </span>
                             <span class="{% if bar.is_best %}font-extrabold text-emerald-400{% else %}font-semibold text-slate-200{% endif %}">
-                                R$ {{ bar.offer.current_price|floatformat:2 }}
+                                {{ bar.offer.current_price|brl }}
                             </span>
                         </div>
-                        <div class="mt-1.5 h-2.5 overflow-hidden rounded-full bg-slate-800">
-                            <div class="h-full rounded-full {% if bar.is_best %}bg-gradient-to-r from-emerald-600 to-emerald-400{% else %}bg-slate-600 group-hover:bg-slate-500{% endif %}"
+                        <div class="mt-1.5 h-2.5 overflow-hidden rounded-full bg-slate-800" role="presentation">
+                            <div class="h-full rounded-full {% if bar.is_best %}bg-emerald-500{% else %}bg-slate-600 group-hover:bg-slate-500{% endif %}"
                                  style="width: {{ bar.width }}%"></div>
                         </div>
                     </a>
@@ -101,24 +110,31 @@
         </section>
         {% endif %}
 
-        {% if spark_points %}
+        {% if spark.line %}
         <section class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
             <h2 class="text-sm font-bold uppercase tracking-wide text-slate-400">Histórico de preço (menor por dia)</h2>
-            <svg viewBox="0 0 640 150" preserveAspectRatio="none" class="mt-4 h-36 w-full rounded-lg bg-slate-950/50 p-2">
+            <svg viewBox="0 0 640 150" preserveAspectRatio="none" class="mt-4 h-36 w-full rounded-lg bg-slate-950/50 p-2" role="img" aria-label="Gráfico de variação de preço">
+                <defs>
+                    <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#34d399" stop-opacity="0.35"/>
+                        <stop offset="100%" stop-color="#34d399" stop-opacity="0.02"/>
+                    </linearGradient>
+                </defs>
+                <polygon fill="url(#areaFill)" points="{{ spark.area }}"/>
                 <polyline fill="none" stroke="#34d399" stroke-width="2.5"
                           stroke-linejoin="round" stroke-linecap="round"
-                          points="{{ spark_points }}"/>
+                          points="{{ spark.line }}"/>
             </svg>
             <div class="mt-2 flex justify-between text-xs text-slate-500">
                 <span>{{ history.0.day|date:"d/m/Y" }}</span>
-                {% if history_min %}<span class="font-semibold text-emerald-400">mínimo R$ {{ history_min|floatformat:2 }}</span>{% endif %}
+                {% if history_min %}<span class="font-semibold text-emerald-400">mínimo {{ history_min|brl }}</span>{% endif %}
                 <span>{{ history.last.day|date:"d/m/Y" }}</span>
             </div>
         </section>
         {% endif %}
 
-        <section id="alerta" class="rounded-2xl border border-emerald-900/60 bg-gradient-to-br from-slate-900 to-emerald-950/30 p-6">
-            <h2 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-emerald-300">🔔 Alerta de preço-alvo</h2>
+        <section id="alerta" class="rounded-2xl border border-emerald-900/60 bg-slate-900 p-6">
+            <h2 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-emerald-300">{% icon "bell" "h-4 w-4" %} Alerta de preço-alvo</h2>
             <p class="mt-1 text-sm text-slate-400">Avisamos por e-mail quando o menor preço ficar igual ou abaixo do valor que você escolher.</p>
             <form method="post" action="{{ product.get_absolute_url }}" class="mt-4 grid gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_auto] sm:items-start">
                 {% csrf_token %}
@@ -138,15 +154,16 @@
 
             <div class="my-5 border-t border-slate-800"></div>
 
-            <h2 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-emerald-300">🏷️ Avise quando entrar em promoção</h2>
+            <h2 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-emerald-300">{% icon "tag" "h-4 w-4" %} Avise quando entrar em promoção</h2>
             <p class="mt-1 text-sm text-slate-400">Sem preço fixo: avisamos assim que detectarmos desconto nesta loja monitorada.</p>
             <form method="post" action="{% url 'catalog:subscribe' %}" class="mt-4 grid gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_auto] sm:items-start">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ product.get_absolute_url }}">
                 <input type="hidden" name="product" value="{{ product.pk }}">
-                <input type="email" name="email" required placeholder="seu@email.com"
+                <input type="email" name="email" required placeholder="seu@email.com" aria-label="Seu e-mail"
                        class="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none">
-                <select name="min_discount" class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm focus:border-emerald-500 focus:outline-none">
+                <select name="min_discount" aria-label="Desconto mínimo"
+                        class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm focus:border-emerald-500 focus:outline-none">
                     <option value="10">a partir de 10%</option>
                     <option value="20">a partir de 20%</option>
                     <option value="30">a partir de 30%</option>

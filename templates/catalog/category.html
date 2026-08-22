@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load catalog_extras %}
 
 {% block title %}{{ category.name }} — Busca Hardware{% endblock %}
 {% block meta_description %}{% if category.description %}{{ category.description }}{% else %}Produtos na categoria {{ category.name }} com os menores preços.{% endif %}{% endblock %}
@@ -8,7 +9,7 @@
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
         <h1 class="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
-            <span class="grid h-11 w-11 place-items-center rounded-xl bg-slate-900 text-xl">{{ category.icon|default:"📦" }}</span>
+            <span class="grid h-11 w-11 place-items-center rounded-xl bg-slate-900 text-slate-300">{% icon category|category_icon "h-6 w-6" %}</span>
             {{ category.name }}
         </h1>
         <p class="mt-1.5 text-sm text-slate-500">{{ total }} produto(s) nesta categoria</p>
@@ -45,15 +46,15 @@
 </div>
 
 {% if page_obj.has_other_pages %}
-<nav class="mt-8 flex items-center justify-center gap-3 text-sm">
+<nav class="mt-8 flex items-center justify-center gap-3 text-sm" aria-label="Paginação">
     {% if page_obj.has_previous %}
     <a href="?page={{ page_obj.previous_page_number }}"
-       class="rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">← Anterior</a>
+       class="inline-flex items-center gap-1 rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">{% icon "chevron-left" "h-4 w-4" %} Anterior</a>
     {% endif %}
     <span class="text-slate-500">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
     {% if page_obj.has_next %}
     <a href="?page={{ page_obj.next_page_number }}"
-       class="rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">Próxima →</a>
+       class="inline-flex items-center gap-1 rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">Próxima {% icon "chevron-right" "h-4 w-4" %}</a>
     {% endif %}
 </nav>
 {% endif %}
