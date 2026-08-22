@@ -3,12 +3,12 @@ from django import forms
 from .models import Category, PriceAlert, PromoSubscription
 
 INPUT_CLASSES = (
-    "w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm "
-    "text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
+    "w-full rounded-md border border-neutral-300 bg-white px-4 py-2.5 text-sm "
+    "text-neutral-800 placeholder:text-neutral-400 focus:border-brand focus:outline-none"
 )
 SELECT_CLASSES = (
-    "w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm "
-    "text-slate-800 focus:border-blue-500 focus:outline-none"
+    "w-full rounded-md border border-neutral-300 bg-white px-4 py-2.5 text-sm "
+    "text-neutral-800 focus:border-brand focus:outline-none"
 )
 
 

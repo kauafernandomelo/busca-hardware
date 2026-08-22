@@ -151,7 +151,7 @@ catalog/
     ├── check_alerts.py        # Alertas de preço-alvo
     └── check_promotions.py    # Detecção de promoções + notificações
 config/settings.py     # Configurações (segredos via variáveis de ambiente)
-templates/             # Templates com UI dark responsiva
+templates/             # Templates com UI estilo marketplace (grafite + laranja)
 theme/                 # App django-tailwind (source do CSS)
 build.sh               # Build de produção (Render): deps, Tailwind, estáticos, migrate
 render.yaml            # Infra como código: web service + PostgreSQL

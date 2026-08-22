@@ -5,29 +5,29 @@
 {% block meta_description %}{% if category.description %}{{ category.description }}{% else %}Produtos na categoria {{ category.name }} com os menores preços.{% endif %}{% endblock %}
 
 {% block breadcrumbs %}
-<nav class="mb-4 flex flex-wrap items-center gap-2 text-sm text-slate-500" aria-label="Trilha de navegação">
-    <a href="{% url 'catalog:home' %}" class="hover:text-blue-700">Início</a>
+<nav class="mb-4 flex flex-wrap items-center gap-2 text-sm text-neutral-500" aria-label="Trilha de navegação">
+    <a href="{% url 'catalog:home' %}" class="hover:text-brand">Início</a>
     <span>/</span>
-    <span class="font-medium text-slate-700">{{ category.name }}</span>
+    <span class="font-medium text-neutral-700">{{ category.name }}</span>
 </nav>
 {% endblock %}
 
 {% block content %}
 
-<div class="flex flex-wrap items-end justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex flex-wrap items-end justify-between gap-4 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
     <div>
-        <h1 class="flex items-center gap-3 text-2xl font-extrabold tracking-tight text-slate-900">
-            <span class="grid h-11 w-11 place-items-center rounded-xl bg-blue-700 text-white">{% icon category|category_icon "h-6 w-6" %}</span>
+        <h1 class="flex items-center gap-3 text-2xl font-black tracking-tight text-neutral-900">
+            <span class="grid h-11 w-11 place-items-center rounded-lg bg-brand text-white">{% icon category|category_icon "h-6 w-6" %}</span>
             {{ category.name }}
         </h1>
-        <p class="mt-1.5 text-sm text-slate-500">{{ total }} produto(s) nesta categoria</p>
+        <p class="mt-1.5 text-sm text-neutral-500">{{ total }} produto(s) nesta categoria</p>
     </div>
 
     <form method="get" class="flex items-center gap-2 text-sm">
         {% if store_slug %}<input type="hidden" name="loja" value="{{ store_slug }}">{% endif %}
-        <label for="sort" class="text-slate-500">Ordenar:</label>
+        <label for="sort" class="text-neutral-500">Ordenar:</label>
         <select name="ord" id="sort" onchange="this.form.submit()"
-                class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
+                class="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-brand focus:outline-none">
             <option value="">Nome (A-Z)</option>
             <option value="preco_asc" {% if sort == 'preco_asc' %}selected{% endif %}>Menor preço</option>
             <option value="preco_desc" {% if sort == 'preco_desc' %}selected{% endif %}>Maior preço</option>
@@ -40,7 +40,7 @@
 <div class="mt-4 flex flex-wrap gap-2">
     {% for sub in subcategories %}
     <a href="{{ sub.get_absolute_url }}"
-       class="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-xs font-bold text-slate-600 transition hover:border-blue-400 hover:text-blue-700">
+       class="rounded-full border border-neutral-300 bg-white px-4 py-1.5 text-xs font-bold text-neutral-600 transition hover:border-brand hover:text-brand">
         {{ sub.name }}
     </a>
     {% endfor %}
@@ -48,15 +48,15 @@
 {% endif %}
 
 <div class="mt-4 flex flex-wrap items-center gap-2">
-    <span class="text-xs font-semibold uppercase tracking-wide text-slate-400">Loja:</span>
+    <span class="text-xs font-semibold uppercase tracking-wide text-neutral-400">Loja:</span>
     {% url 'catalog:category' category.slug as cat_url %}
     <a href="{{ cat_url }}"
-       class="rounded-full border px-3.5 py-1.5 text-xs font-bold transition {% if not store_slug %}border-blue-600 bg-blue-600 text-white{% else %}border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-700{% endif %}">
+       class="rounded-full border px-3.5 py-1.5 text-xs font-bold transition {% if not store_slug %}border-ink-800 bg-ink-800 text-white{% else %}border-neutral-300 bg-white text-neutral-600 hover:border-brand hover:text-brand{% endif %}">
         Todas
     </a>
     {% for store in active_stores %}
     <a href="{{ cat_url }}?loja={{ store.slug }}"
-       class="rounded-full border px-3.5 py-1.5 text-xs font-bold transition {% if store_slug == store.slug %}border-blue-600 bg-blue-600 text-white{% else %}border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-700{% endif %}">
+       class="rounded-full border px-3.5 py-1.5 text-xs font-bold transition {% if store_slug == store.slug %}border-ink-800 bg-ink-800 text-white{% else %}border-neutral-300 bg-white text-neutral-600 hover:border-brand hover:text-brand{% endif %}">
         {{ store.name }}
     </a>
     {% endfor %}
@@ -72,7 +72,7 @@
 {% include "catalog/_pagination.html" %}
 
 {% else %}
-<p class="mt-8 rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-500">
+<p class="mt-8 rounded-lg border border-dashed border-neutral-300 bg-white p-10 text-center text-sm text-neutral-500">
     Ainda não há produtos nesta categoria. As ofertas são importadas automaticamente pelo robô de coleta.
 </p>
 {% endif %}

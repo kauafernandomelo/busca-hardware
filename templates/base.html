@@ -11,28 +11,28 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563eb'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
 </head>
-<body class="flex min-h-full flex-col bg-slate-100 text-slate-800 antialiased">
+<body class="flex min-h-full flex-col bg-neutral-100 text-neutral-800 antialiased">
 
-    <header class="sticky top-0 z-40 shadow-md">
-        <!-- Nível 1: marca, busca e ações -->
-        <div class="bg-blue-950 text-white">
+    <header class="sticky top-0 z-40 shadow-lg">
+        <!-- Nível 1: marca, busca e ações (grafite estilo Terabyte) -->
+        <div class="bg-ink-950 text-white">
             <div class="mx-auto max-w-7xl px-4 sm:px-6">
-                <div class="flex h-16 items-center gap-3">
+                <div class="flex h-[4.25rem] items-center gap-3">
 
-                    <a href="{% url 'catalog:home' %}" class="flex shrink-0 items-center gap-2 text-lg font-extrabold tracking-tight">
-                        <span class="grid h-9 w-9 place-items-center rounded-xl bg-amber-400 text-blue-950">{% icon "zap" "h-5 w-5" %}</span>
-                        <span>Busca<span class="text-amber-400">Hardware</span></span>
+                    <a href="{% url 'catalog:home' %}" class="flex shrink-0 items-center gap-2 text-lg font-black uppercase italic tracking-tight">
+                        <span class="grid h-9 w-9 place-items-center rounded-md bg-brand text-white shadow-sm">{% icon "zap" "h-5 w-5" %}</span>
+                        <span>Busca<span class="text-brand">Hardware</span></span>
                     </a>
 
                     <form action="{% url 'catalog:search' %}" method="get" class="ml-2 hidden flex-1 md:block" role="search">
-                        <div class="relative max-w-3xl">
-                            <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Buscar RTX 4070, Ryzen 5 5600, SSD 1TB..." aria-label="Buscar produtos"
-                                   class="w-full rounded-lg border-2 border-transparent bg-white py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
+                        <div class="mx-auto flex max-w-2xl overflow-hidden rounded-md shadow-inner">
+                            <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Encontre na Busca Hardware..." aria-label="Buscar produtos"
+                                   class="w-full bg-white py-2.5 pl-4 pr-4 text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none">
                             <button type="submit" aria-label="Buscar"
-                                    class="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg bg-amber-400 text-blue-950 transition hover:bg-amber-300">
+                                    class="flex w-12 items-center justify-center bg-brand text-white transition hover:bg-brand-dark">
                                 {% icon "search" "h-4 w-4" %}
                             </button>
                         </div>
@@ -40,55 +40,57 @@
 
                     <nav class="ml-auto hidden items-center gap-1 text-sm font-medium md:flex" aria-label="Navegação principal">
                         <a href="{% url 'catalog:promotions' %}"
-                           class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-blue-100 transition hover:bg-white/10 hover:text-amber-300">{% icon "flame" "h-4 w-4" %} Promoções</a>
+                           class="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-neutral-300 transition hover:bg-white/10 hover:text-white">{% icon "flame" "h-4 w-4 text-brand" %} Promoções</a>
                         <a href="{% url 'catalog:search' %}"
-                           class="rounded-lg px-3 py-2 text-blue-100 transition hover:bg-white/10 hover:text-amber-300">Produtos</a>
+                           class="rounded-md px-3 py-2 text-neutral-300 transition hover:bg-white/10 hover:text-white">Produtos</a>
                         <a href="{% url 'catalog:promotions' %}#assinar"
-                           class="ml-2 inline-flex items-center gap-1.5 rounded-lg bg-amber-400 px-4 py-2 font-bold text-blue-950 transition hover:bg-amber-300">{% icon "bell" "h-4 w-4" %} Criar alerta</a>
+                           class="ml-1 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 font-bold text-white shadow-sm transition hover:bg-brand-dark">{% icon "bell" "h-4 w-4" %} Criar alerta</a>
                     </nav>
 
                     <input type="checkbox" id="menu-toggle" class="peer hidden">
-                    <label for="menu-toggle" class="ml-auto cursor-pointer rounded-lg border border-white/25 p-2 md:hidden" aria-label="Abrir menu" role="button" tabindex="0">
-                        <span class="block h-0.5 w-5 bg-blue-100"></span>
-                        <span class="mt-1 block h-0.5 w-5 bg-blue-100"></span>
-                        <span class="mt-1 block h-0.5 w-5 bg-blue-100"></span>
+                    <label for="menu-toggle" class="ml-auto cursor-pointer rounded-md border border-white/25 p-2 md:hidden" aria-label="Abrir menu" role="button" tabindex="0">
+                        <span class="block h-0.5 w-5 bg-neutral-200"></span>
+                        <span class="mt-1 block h-0.5 w-5 bg-neutral-200"></span>
+                        <span class="mt-1 block h-0.5 w-5 bg-neutral-200"></span>
                     </label>
                 </div>
 
                 <form action="{% url 'catalog:search' %}" method="get" class="pb-3 md:hidden" role="search">
-                    <div class="relative">
-                        <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Buscar produtos..." aria-label="Buscar produtos"
-                               class="w-full rounded-lg bg-white py-2.5 pl-10 pr-11 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400">
-                        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">{% icon "search" "h-4 w-4" %}</span>
+                    <div class="relative flex overflow-hidden rounded-md shadow-inner">
+                        <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Encontre na Busca Hardware..." aria-label="Buscar produtos"
+                               class="w-full bg-white py-2.5 pl-4 pr-11 text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none">
+                        <button type="submit" aria-label="Buscar" class="absolute inset-y-0 right-0 flex w-11 items-center justify-center bg-brand text-white">
+                            {% icon "search" "h-4 w-4" %}
+                        </button>
                     </div>
                 </form>
 
                 <nav class="hidden border-t border-white/10 py-2 text-sm font-medium peer-checked:block md:hidden" aria-label="Menu móvel">
-                    <a href="{% url 'catalog:promotions' %}" class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-blue-100 hover:bg-white/10 hover:text-amber-300">{% icon "flame" "h-4 w-4" %} Promoções</a>
-                    <a href="{% url 'catalog:search' %}" class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-blue-100 hover:bg-white/10 hover:text-amber-300">{% icon "package" "h-4 w-4" %} Todos os produtos</a>
-                    <a href="{% url 'catalog:promotions' %}#assinar" class="mt-2 flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-3 py-2.5 font-bold text-blue-950">{% icon "bell" "h-4 w-4" %} Criar alerta</a>
+                    <a href="{% url 'catalog:promotions' %}" class="flex items-center gap-2 rounded-md px-3 py-2.5 text-brand hover:bg-white/10">{% icon "flame" "h-4 w-4" %} Promoções</a>
+                    <a href="{% url 'catalog:search' %}" class="flex items-center gap-2 rounded-md px-3 py-2.5 text-neutral-200 hover:bg-white/10">{% icon "package" "h-4 w-4" %} Todos os produtos</a>
+                    <a href="{% url 'catalog:promotions' %}#assinar" class="mt-2 flex items-center justify-center gap-2 rounded-md bg-brand px-3 py-2.5 font-bold text-white">{% icon "bell" "h-4 w-4" %} Criar alerta</a>
                 </nav>
             </div>
         </div>
 
-        <!-- Nível 2: barra de categorias -->
+        <!-- Nível 2: barra de departamentos -->
         {% if nav_categories %}
-        <nav class="hidden border-b border-slate-200 bg-white md:block" aria-label="Categorias">
+        <nav class="hidden border-b-2 border-brand bg-ink-900 md:block" aria-label="Categorias">
             <div class="mx-auto max-w-7xl px-4 sm:px-6">
-                <ul class="flex h-11 items-center gap-1 overflow-x-auto text-sm font-medium text-slate-600">
+                <ul class="flex h-11 items-center gap-1 overflow-x-auto text-sm font-medium text-neutral-300">
                     <li>
-                        <a href="{% url 'catalog:promotions' %}" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 font-bold text-red-600 transition hover:bg-red-50">
+                        <a href="{% url 'catalog:promotions' %}" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm bg-brand px-3 py-1.5 font-bold text-white transition hover:bg-brand-dark">
                             {% icon "flame" "h-4 w-4" %} Ofertas
                         </a>
                     </li>
                     {% for category in nav_categories %}
                     <li>
                         <a href="{{ category.get_absolute_url }}"
-                           class="whitespace-nowrap rounded-md px-3 py-1.5 transition hover:bg-blue-50 hover:text-blue-700">{{ category.name }}</a>
+                           class="whitespace-nowrap rounded-sm px-3 py-1.5 transition hover:bg-white/10 hover:text-white">{{ category.name }}</a>
                     </li>
                     {% endfor %}
                     <li>
-                        <a href="{% url 'catalog:search' %}" class="ml-auto inline-flex items-center gap-1 whitespace-nowrap rounded-md px-3 py-1.5 text-blue-700 transition hover:bg-blue-50">
+                        <a href="{% url 'catalog:search' %}" class="ml-auto inline-flex items-center gap-1 whitespace-nowrap rounded-sm px-3 py-1.5 text-neutral-400 transition hover:bg-white/10 hover:text-white">
                             Ver tudo {% icon "arrow-right" "h-3.5 w-3.5" %}
                         </a>
                     </li>
@@ -102,10 +104,10 @@
         {% if messages %}
         <div class="mb-6 space-y-2" role="status">
             {% for message in messages %}
-            <div class="flex items-start gap-2 rounded-xl border px-4 py-3 text-sm
+            <div class="flex items-start gap-2 rounded-lg border px-4 py-3 text-sm
                         {% if message.tags == 'success' %}border-green-200 bg-green-50 text-green-800
                         {% elif message.tags == 'error' %}border-red-200 bg-red-50 text-red-700
-                        {% else %}border-slate-200 bg-white text-slate-700{% endif %}">
+                        {% else %}border-neutral-200 bg-white text-neutral-700{% endif %}">
                 <span class="mt-0.5 shrink-0">{% if message.tags == 'success' %}{% icon "check-circle" "h-4 w-4" %}{% elif message.tags == 'error' %}{% icon "alert-triangle" "h-4 w-4" %}{% else %}{% icon "info" "h-4 w-4" %}{% endif %}</span>
                 <p>{{ message }}</p>
             </div>
@@ -116,27 +118,27 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="mt-8 bg-blue-950 text-blue-100">
+    <footer class="mt-8 bg-ink-950 text-neutral-300">
         <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
             <div class="grid gap-10 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
 
                 <div>
-                    <a href="{% url 'catalog:home' %}" class="flex items-center gap-2 text-lg font-extrabold tracking-tight text-white">
-                        <span class="grid h-9 w-9 place-items-center rounded-xl bg-amber-400 text-blue-950">{% icon "zap" "h-5 w-5" %}</span>
-                        <span>Busca<span class="text-amber-400">Hardware</span></span>
+                    <a href="{% url 'catalog:home' %}" class="flex items-center gap-2 text-lg font-black uppercase italic tracking-tight text-white">
+                        <span class="grid h-9 w-9 place-items-center rounded-md bg-brand text-white">{% icon "zap" "h-5 w-5" %}</span>
+                        <span>Busca<span class="text-brand">Hardware</span></span>
                     </a>
-                    <p class="mt-3 max-w-sm text-sm leading-relaxed text-blue-200/80">
+                    <p class="mt-3 max-w-sm text-sm leading-relaxed text-neutral-400">
                         Comparamos preços de hardware nas maiores lojas do Brasil e avisamos você quando o que você quer entra em promoção.
                     </p>
 
                     <form action="{% url 'catalog:subscribe' %}" method="post" class="mt-5 max-w-md">
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ request.path }}">
-                        <label for="newsletter-email" class="text-xs font-semibold uppercase tracking-wide text-blue-300/80">Receba promoções por e-mail</label>
+                        <label for="newsletter-email" class="text-xs font-semibold uppercase tracking-wide text-neutral-500">Receba promoções por e-mail</label>
                         <div class="mt-2 flex gap-2">
                             <input type="email" id="newsletter-email" name="email" required placeholder="seu@email.com" aria-label="Seu e-mail"
-                                   class="w-full rounded-lg border-0 bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-blue-300/60 focus:outline-none focus:ring-2 focus:ring-amber-400">
-                            <button type="submit" class="shrink-0 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-bold text-blue-950 transition hover:bg-amber-300">
+                                   class="w-full rounded-md border-0 bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-brand">
+                            <button type="submit" class="shrink-0 rounded-md bg-brand px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-dark">
                                 Quero receber
                             </button>
                         </div>
@@ -144,17 +146,17 @@
                 </div>
 
                 <div>
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-blue-300/80">Navegar</h3>
-                    <ul class="mt-3 space-y-2 text-sm text-blue-100/90">
-                        <li><a href="{% url 'catalog:home' %}" class="transition hover:text-amber-300">Início</a></li>
-                        <li><a href="{% url 'catalog:promotions' %}" class="transition hover:text-amber-300">Promoções</a></li>
-                        <li><a href="{% url 'catalog:search' %}" class="transition hover:text-amber-300">Todos os produtos</a></li>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Navegar</h3>
+                    <ul class="mt-3 space-y-2 text-sm text-neutral-300">
+                        <li><a href="{% url 'catalog:home' %}" class="transition hover:text-brand">Início</a></li>
+                        <li><a href="{% url 'catalog:promotions' %}" class="transition hover:text-brand">Promoções</a></li>
+                        <li><a href="{% url 'catalog:search' %}" class="transition hover:text-brand">Todos os produtos</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-blue-300/80">Lojas monitoradas</h3>
-                    <ul class="mt-3 space-y-2 text-sm text-blue-100/90">
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Lojas monitoradas</h3>
+                    <ul class="mt-3 space-y-2 text-sm text-neutral-300">
                         {% for store in active_stores %}
                         <li>{{ store.name }}</li>
                         {% empty %}
@@ -165,7 +167,7 @@
                 </div>
             </div>
 
-            <div class="mt-10 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-blue-200/70 sm:flex-row">
+            <div class="mt-10 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-neutral-500 sm:flex-row">
                 <p>© {% now "Y" %} Busca Hardware. Comparador de preços de informática.</p>
                 <p>Preços coletados automaticamente. Sempre confira o preço final na loja antes de comprar.</p>
             </div>

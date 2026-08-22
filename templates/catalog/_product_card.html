@@ -1,41 +1,44 @@
 {% load catalog_extras %}
 {% with offer=product.best_offer %}
 <a href="{{ product.get_absolute_url }}"
-   class="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition duration-300 ease-out hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl active:translate-y-0">
+   class="group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition duration-300 ease-out hover:-translate-y-1 hover:border-brand/50 hover:shadow-xl active:translate-y-0">
     <div class="relative grid h-44 place-items-center overflow-hidden bg-white">
         {% if product.image_url %}
         <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy"
              class="h-full w-full object-contain p-4 transition duration-300 group-hover:scale-105">
         {% else %}
-        <span class="text-slate-300">{% icon "monitor" "h-12 w-12" %}</span>
+        <span class="text-neutral-300">{% icon "monitor" "h-12 w-12" %}</span>
         {% endif %}
         {% if product.max_discount %}
-        <span class="absolute left-3 top-3 rounded-md bg-red-600 px-2 py-1 text-xs font-extrabold text-white shadow-sm">
+        <span class="absolute left-3 top-3 rounded-md bg-brand px-2 py-1 text-xs font-black text-white shadow-md">
             -{{ product.max_discount|floatformat:0 }}%
         </span>
         {% endif %}
     </div>
 
-    <div class="flex flex-1 flex-col border-t border-slate-100 p-4">
-        <div class="flex items-center justify-between gap-2 text-[11px] uppercase tracking-wide text-slate-400">
+    <div class="flex flex-1 flex-col border-t border-neutral-100 p-4">
+        <div class="flex items-center justify-between gap-2 text-[11px] uppercase tracking-wide text-neutral-400">
             <span class="truncate font-semibold">{{ product.brand.name|default:product.category.name }}</span>
             {% if offer %}<span class="shrink-0 rounded border px-1.5 py-0.5 font-bold {{ offer.store|store_badge }}">{{ offer.store.name }}</span>{% endif %}
         </div>
 
-        <h3 class="mt-1.5 line-clamp-2 min-h-[2.5rem] text-sm leading-snug text-slate-700 group-hover:text-blue-700">{{ product.name }}</h3>
+        <h3 class="mt-1.5 line-clamp-2 min-h-[2.5rem] text-sm leading-snug text-neutral-700 transition-colors group-hover:text-brand-dark">{{ product.name }}</h3>
 
         <div class="mt-auto pt-3">
             {% if offer %}
             {% if offer.original_price and offer.original_price > offer.current_price %}
-            <div class="text-xs text-slate-400 line-through">{{ offer.original_price|brl }}</div>
+            <div class="text-xs text-neutral-400 line-through">{{ offer.original_price|brl }}</div>
             {% endif %}
-            <div class="text-lg font-extrabold text-green-600">{{ offer.current_price|brl }}</div>
-            <div class="mt-0.5 flex items-center justify-between gap-2 text-xs text-slate-500">
-                <span>à vista em <span class="font-semibold">{{ offer.store.name }}</span></span>
-                {% if product.n_offers > 1 %}<span class="text-blue-700">{{ product.n_offers }} lojas</span>{% endif %}
+            <div class="flex items-baseline gap-1.5">
+                <span class="text-xl font-black tracking-tight text-green-600">{{ offer.current_price|brl }}</span>
+                <span class="text-[11px] font-bold uppercase text-green-600/80">à vista</span>
+            </div>
+            <div class="mt-0.5 flex items-center justify-between gap-2 text-xs text-neutral-500">
+                <span>em <span class="font-semibold">{{ offer.store.name }}</span></span>
+                {% if product.n_offers > 1 %}<span class="font-semibold text-brand">{{ product.n_offers }} lojas</span>{% endif %}
             </div>
             {% else %}
-            <div class="text-xs text-slate-500">sem ofertas disponíveis</div>
+            <div class="text-xs text-neutral-500">sem ofertas disponíveis</div>
             {% endif %}
         </div>
     </div>
