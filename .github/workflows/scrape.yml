@@ -1,0 +1,50 @@
+name: Coleta de precos
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: coleta-precos
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DJANGO_DEBUG: "0"
+      SITE_URL: ${{ vars.SITE_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Conferir secret DATABASE_URL
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "ERRO: defina o secret DATABASE_URL nas configuracoes do repositorio."
+            exit 1
+          fi
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Aplicar migracoes
+        run: python manage.py migrate --noinput
+
+      - name: Coletar catalogo e precos (3 lojas)
+        run: python manage.py import_catalog --all
+
+      - name: Verificar alertas de preco
+        run: python manage.py check_alerts
+
+      - name: Verificar promocoes
+        run: python manage.py check_promotions

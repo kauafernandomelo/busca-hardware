@@ -5,6 +5,7 @@ Comparador de preços de hardware que monitora **KaBuM!**, **Pichau** e **Teraby
 ![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-6.1-092E20?logo=django&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?logo=tailwindcss&logoColor=white)
+![Coleta de preços](https://github.com/kauafernandomelo/busca-hardware/actions/workflows/scrape.yml/badge.svg)
 
 ## Funcionalidades
 
@@ -23,7 +24,9 @@ Comparador de preços de hardware que monitora **KaBuM!**, **Pichau** e **Teraby
 | Backend | Django 6.1 (sem dependências pesadas) |
 | Front-end | Django Templates + Tailwind CSS 4 (via django-tailwind) |
 | Scraping | requests + selectolax, com retries/backoff contra WAF |
-| Banco | SQLite (portátil, trocável por PostgreSQL) |
+| Banco | SQLite no dev, PostgreSQL em produção (dj-database-url) |
+| Deploy | Render (Gunicorn + Whitenoise), infra como código em `render.yaml` |
+| Coleta agendada | GitHub Actions, a cada 6 horas, gravando direto no banco de produção |
 
 ## Como funciona a coleta
 
@@ -49,7 +52,7 @@ pip install -r requirements.txt
 
 # 2. Variáveis de ambiente — crie um arquivo .env na raiz:
 #    DJANGO_SECRET_KEY=<sua chave>
-#    DJANGO_DEBUG=0
+#    DJANGO_DEBUG=1
 # Gere uma chave segura com:
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 
@@ -76,7 +79,43 @@ python manage.py runserver
 | `check_alerts` | Verifica alertas de preço-alvo e dispara e-mails |
 | `check_promotions` | Detecta novas promoções e notifica assinantes (cooldown 24h) |
 
-Em produção, agende `check_alerts` e `check_promotions` no cron/Agendador de Tarefas.
+Em produção esses comandos rodam automaticamente no workflow do GitHub Actions (ver abaixo).
+
+## Deploy
+
+O site roda no **Render** e a coleta de preços no **GitHub Actions** — nenhuma execução acontece na máquina local.
+
+### 1. Site no Render (blueprint)
+
+O arquivo `render.yaml` já descreve web service + PostgreSQL. No dashboard:
+
+1. **New** → **Blueprint** → selecione este repositório → **Apply**
+2. O Render cria o banco, injeta `DATABASE_URL`, gera a `DJANGO_SECRET_KEY` e roda `build.sh` (dependências, Tailwind, `collectstatic`, `migrate`)
+3. O host público (`*.onrender.com`) é detectado automaticamente via `RENDER_EXTERNAL_HOSTNAME`
+
+### 2. Coleta agendada no GitHub Actions
+
+O workflow `.github/workflows/scrape.yml` roda a cada 6 horas (cron UTC) e executa: `migrate` → `import_catalog --all` → `check_alerts` → `check_promotions`, gravando direto no PostgreSQL do Render.
+
+Configuração única necessária:
+
+1. No Render, abra o banco criado pelo blueprint e copie a **External Database URL**
+2. No GitHub: *Settings* → *Secrets and variables* → *Actions* → **New repository secret**
+   - Name: `DATABASE_URL`
+   - Secret: a URL copiada (contém usuário/senha — nunca coloque em arquivos)
+3. Aba **Actions** → workflow "Coleta de precos" → **Run workflow** para a primeira coleta manual
+
+Opcional: crie a variável de repositório `SITE_URL` com a URL pública do site para os links dos e-mails de alerta.
+
+### Variáveis de ambiente
+
+| Variável | Onde | Função |
+|---|---|---|
+| `DJANGO_SECRET_KEY` | .env / Render | Chave secreta do Django |
+| `DJANGO_DEBUG` | .env / Render | `1` só no dev; default fechado em `0` |
+| `DATABASE_URL` | secret do Actions / Render | String PostgreSQL (fallback: SQLite) |
+| `SITE_URL` | vars do Actions / opcional | URL base usada nos links dos alertas |
+| `NPM_BIN_PATH` | .env (Windows) | Caminho do npm quando fora do PATH |
 
 ## Estrutura
 
@@ -93,12 +132,15 @@ catalog/
 config/settings.py     # Configurações (segredos via variáveis de ambiente)
 templates/             # Templates com UI dark responsiva
 theme/                 # App django-tailwind (source do CSS)
+build.sh               # Build de produção (Render): deps, Tailwind, estáticos, migrate
+render.yaml            # Infra como código: web service + PostgreSQL
 ```
 
 ## Roadmap
 
-- [ ] Deploy com PostgreSQL + Redis
-- [ ] Agendamento interno de coletas (celery beat ou management loop)
+- [x] Deploy com PostgreSQL (Render, Gunicorn + Whitenoise)
+- [x] Coleta agendada sem servidor próprio (GitHub Actions a cada 6h)
+- [ ] Envio real de e-mails (SMTP) para alertas e promoções
 - [ ] API REST pública
 - [ ] Comparação de parcelamento e preço à vista
 
