@@ -3,13 +3,21 @@
 
 {% block title %}{% if query %}Busca: {{ query }}{% else %}Buscar produtos{% endif %} — Busca Hardware{% endblock %}
 
+{% block breadcrumbs %}
+<nav class="mb-4 flex items-center gap-2 text-sm text-slate-500" aria-label="Trilha de navegação">
+    <a href="{% url 'catalog:home' %}" class="hover:text-blue-700">Início</a>
+    <span>/</span>
+    <span class="font-medium text-slate-700">{% if query %}Busca{% else %}Produtos{% endif %}</span>
+</nav>
+{% endblock %}
+
 {% block content %}
 
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <h1 class="text-2xl font-extrabold tracking-tight">
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">
             {% if query %}
-            Resultados para <span class="text-emerald-400">“{{ query }}”</span>
+            Resultados para <span class="text-blue-700">“{{ query }}”</span>
             {% else %}
             Todos os produtos
             {% endif %}
@@ -19,15 +27,30 @@
 
     <form method="get" action="{% url 'catalog:search' %}" class="flex items-center gap-2 text-sm">
         {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+        {% if store_slug %}<input type="hidden" name="loja" value="{{ store_slug }}">{% endif %}
         <label for="sort" class="text-slate-500">Ordenar:</label>
         <select name="ord" id="sort" onchange="this.form.submit()"
-                class="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
             <option value="">Relevância</option>
             <option value="preco_asc" {% if sort == 'preco_asc' %}selected{% endif %}>Menor preço</option>
             <option value="preco_desc" {% if sort == 'preco_desc' %}selected{% endif %}>Maior preço</option>
             <option value="desconto" {% if sort == 'desconto' %}selected{% endif %}>Maior desconto</option>
         </select>
     </form>
+</div>
+
+<div class="mt-4 flex flex-wrap items-center gap-2">
+    <span class="text-xs font-semibold uppercase tracking-wide text-slate-400">Loja:</span>
+    <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if sort %}ord={{ sort }}{% endif %}"
+       class="rounded-full border px-3.5 py-1.5 text-xs font-bold transition {% if not store_slug %}border-blue-600 bg-blue-600 text-white{% else %}border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-700{% endif %}">
+        Todas
+    </a>
+    {% for store in active_stores %}
+    <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if sort %}ord={{ sort }}&{% endif %}loja={{ store.slug }}"
+       class="rounded-full border px-3.5 py-1.5 text-xs font-bold transition {% if store_slug == store.slug %}border-blue-600 bg-blue-600 text-white{% else %}border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-700{% endif %}">
+        {{ store.name }}
+    </a>
+    {% endfor %}
 </div>
 
 {% if page_obj.object_list %}
@@ -37,23 +60,11 @@
     {% endfor %}
 </div>
 
-{% if page_obj.has_other_pages %}
-<nav class="mt-8 flex items-center justify-center gap-3 text-sm" aria-label="Paginação">
-    {% if page_obj.has_previous %}
-    <a href="?{% if params_without_page %}{{ params_without_page }}&{% endif %}page={{ page_obj.previous_page_number }}"
-       class="inline-flex items-center gap-1 rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">{% icon "chevron-left" "h-4 w-4" %} Anterior</a>
-    {% endif %}
-    <span class="text-slate-500">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-    {% if page_obj.has_next %}
-    <a href="?{% if params_without_page %}{{ params_without_page }}&{% endif %}page={{ page_obj.next_page_number }}"
-       class="inline-flex items-center gap-1 rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">Próxima {% icon "chevron-right" "h-4 w-4" %}</a>
-    {% endif %}
-</nav>
-{% endif %}
+{% include "catalog/_pagination.html" %}
 
 {% else %}
-<p class="mt-8 rounded-2xl border border-dashed border-slate-800 p-10 text-center text-sm text-slate-500">
-    Nenhum produto encontrado{% if query %} para “{{ query }}”{% endif %}.
+<p class="mt-8 rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-500">
+    Nenhum produto encontrado{% if query %} para “{{ query }}”{% endif %}{% if store_slug %} na loja selecionada{% endif %}.
     Tente outro termo, como “RTX 4070” ou “SSD 1TB”.
 </p>
 {% endif %}

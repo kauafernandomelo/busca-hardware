@@ -1,6 +1,6 @@
 # Busca Hardware
 
-Comparador de preços de hardware que monitora **KaBuM!**, **Pichau** e **Terabyte**, detecta promoções automaticamente e avisa por e-mail quando o produto que você quer fica barato.
+Comparador de preços de hardware que monitora **KaBuM!**, **Pichau** e **Terabyte**, detecta promoções automaticamente e avisa por e-mail quando o produto que você quer fica barato. *(Coleta do Pichau pausada — WAF bloqueia IPs de cloud; ver [Deploy](#deploy) › Sobre o Pichau.)*
 
 ![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-6.1-092E20?logo=django&logoColor=white)

@@ -23,12 +23,12 @@
     }
 
     :focus-visible {
-        outline: 2px solid var(--color-emerald-400);
+        outline: 2px solid var(--color-blue-500);
         outline-offset: 2px;
         border-radius: 2px;
     }
 
     ::selection {
-        background-color: color-mix(in oklab, var(--color-emerald-500) 35%, transparent);
+        background-color: color-mix(in oklab, var(--color-blue-500) 25%, transparent);
     }
 }

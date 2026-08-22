@@ -1,0 +1,27 @@
+{% load catalog_extras %}
+{% if page_obj.has_other_pages %}
+<nav class="mt-8 flex items-center justify-center gap-1.5 text-sm" aria-label="Paginação">
+    {% if page_obj.has_previous %}
+    <a href="?{% if params_without_page %}{{ params_without_page }}&{% endif %}page={{ page_obj.previous_page_number }}"
+       class="inline-flex h-10 items-center gap-1 rounded-lg border border-slate-300 bg-white px-4 font-semibold text-slate-600 transition hover:border-blue-500 hover:text-blue-700">
+        {% icon "chevron-left" "h-4 w-4" %} Anterior
+    </a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+        <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-700 font-bold text-white" aria-current="page">{{ num }}</span>
+        {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+        <a href="?{% if params_without_page %}{{ params_without_page }}&{% endif %}page={{ num }}"
+           class="hidden h-10 w-10 items-center justify-center rounded-lg border border-slate-300 bg-white font-semibold text-slate-600 transition hover:border-blue-500 hover:text-blue-700 sm:inline-flex">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?{% if params_without_page %}{{ params_without_page }}&{% endif %}page={{ page_obj.next_page_number }}"
+       class="inline-flex h-10 items-center gap-1 rounded-lg border border-slate-300 bg-white px-4 font-semibold text-slate-600 transition hover:border-blue-500 hover:text-blue-700">
+        Próxima {% icon "chevron-right" "h-4 w-4" %}
+    </a>
+    {% endif %}
+</nav>
+{% endif %}

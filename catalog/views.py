@@ -33,11 +33,18 @@ def home(request):
 
 def search(request):
     query = request.GET.get("q", "").strip()
+    store_slug = request.GET.get("loja", "").strip()
     products = base_product_queryset()
     if query:
         products = products.filter(
             Q(name__icontains=query) | Q(brand__name__icontains=query)
         )
+    if store_slug:
+        products = products.filter(
+            offers__store__slug=store_slug,
+            offers__is_available=True,
+            offers__current_price__isnull=False,
+        ).distinct()
     products = apply_sorting(products, request.GET.get("ord"))
 
     paginator = Paginator(products, 12)
@@ -45,6 +52,7 @@ def search(request):
 
     context = {
         "query": query,
+        "store_slug": store_slug,
         "page_obj": page_obj,
         "total": paginator.count,
         "sort": request.GET.get("ord", ""),
@@ -55,10 +63,15 @@ def search(request):
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    products = apply_sorting(
-        base_product_queryset().filter(category=category),
-        request.GET.get("ord"),
-    )
+    store_slug = request.GET.get("loja", "").strip()
+    products = base_product_queryset().filter(category=category)
+    if store_slug:
+        products = products.filter(
+            offers__store__slug=store_slug,
+            offers__is_available=True,
+            offers__current_price__isnull=False,
+        ).distinct()
+    products = apply_sorting(products, request.GET.get("ord"))
 
     paginator = Paginator(products, 12)
     page_obj = paginator.get_page(request.GET.get("page"))
@@ -66,6 +79,7 @@ def category_detail(request, slug):
     context = {
         "category": category,
         "subcategories": category.children.all(),
+        "store_slug": store_slug,
         "page_obj": page_obj,
         "total": paginator.count,
         "sort": request.GET.get("ord", ""),
@@ -82,6 +96,7 @@ def promotions(request):
         "page_obj": page_obj,
         "total": paginator.count,
         "promo_form": PromoSubscriptionForm(),
+        "params_without_page": "",
     }
     return render(request, "catalog/promotions.html", context)
 

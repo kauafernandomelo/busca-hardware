@@ -8,102 +8,135 @@
     <meta name="description" content="{% block meta_description %}Compare preços de hardware e informática nas maiores lojas do Brasil. Encontre os menores preços e promoções.{% endblock %}">
     <meta property="og:title" content="{% block og_title %}Busca Hardware{% endblock %}">
     <meta property="og:type" content="website">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2334d399'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563eb'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
 </head>
-<body class="flex min-h-full flex-col bg-slate-950 text-slate-100 antialiased">
+<body class="flex min-h-full flex-col bg-slate-100 text-slate-800 antialiased">
 
-    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/95 backdrop-blur">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6">
-            <div class="flex h-16 items-center gap-3">
+    <header class="sticky top-0 z-40 shadow-md">
+        <!-- Nível 1: marca, busca e ações -->
+        <div class="bg-blue-950 text-white">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6">
+                <div class="flex h-16 items-center gap-3">
 
-                <a href="{% url 'catalog:home' %}" class="flex shrink-0 items-center gap-2 text-lg font-bold tracking-tight">
-                    <span class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20">{% icon "zap" "h-5 w-5" %}</span>
-                    <span>Busca<span class="text-emerald-400">Hardware</span></span>
-                </a>
+                    <a href="{% url 'catalog:home' %}" class="flex shrink-0 items-center gap-2 text-lg font-extrabold tracking-tight">
+                        <span class="grid h-9 w-9 place-items-center rounded-xl bg-amber-400 text-blue-950">{% icon "zap" "h-5 w-5" %}</span>
+                        <span>Busca<span class="text-amber-400">Hardware</span></span>
+                    </a>
 
-                <form action="{% url 'catalog:search' %}" method="get" class="ml-2 hidden flex-1 md:block" role="search">
+                    <form action="{% url 'catalog:search' %}" method="get" class="ml-2 hidden flex-1 md:block" role="search">
+                        <div class="relative max-w-3xl">
+                            <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Buscar RTX 4070, Ryzen 5 5600, SSD 1TB..." aria-label="Buscar produtos"
+                                   class="w-full rounded-lg border-2 border-transparent bg-white py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
+                            <button type="submit" aria-label="Buscar"
+                                    class="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg bg-amber-400 text-blue-950 transition hover:bg-amber-300">
+                                {% icon "search" "h-4 w-4" %}
+                            </button>
+                        </div>
+                    </form>
+
+                    <nav class="ml-auto hidden items-center gap-1 text-sm font-medium md:flex" aria-label="Navegação principal">
+                        <a href="{% url 'catalog:promotions' %}"
+                           class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-blue-100 transition hover:bg-white/10 hover:text-amber-300">{% icon "flame" "h-4 w-4" %} Promoções</a>
+                        <a href="{% url 'catalog:search' %}"
+                           class="rounded-lg px-3 py-2 text-blue-100 transition hover:bg-white/10 hover:text-amber-300">Produtos</a>
+                        <a href="{% url 'catalog:promotions' %}#assinar"
+                           class="ml-2 inline-flex items-center gap-1.5 rounded-lg bg-amber-400 px-4 py-2 font-bold text-blue-950 transition hover:bg-amber-300">{% icon "bell" "h-4 w-4" %} Criar alerta</a>
+                    </nav>
+
+                    <input type="checkbox" id="menu-toggle" class="peer hidden">
+                    <label for="menu-toggle" class="ml-auto cursor-pointer rounded-lg border border-white/25 p-2 md:hidden" aria-label="Abrir menu" role="button" tabindex="0">
+                        <span class="block h-0.5 w-5 bg-blue-100"></span>
+                        <span class="mt-1 block h-0.5 w-5 bg-blue-100"></span>
+                        <span class="mt-1 block h-0.5 w-5 bg-blue-100"></span>
+                    </label>
+                </div>
+
+                <form action="{% url 'catalog:search' %}" method="get" class="pb-3 md:hidden" role="search">
                     <div class="relative">
-                        <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Buscar RTX 4070, Ryzen 5 5600, SSD 1TB..." aria-label="Buscar produtos"
-                               class="w-full rounded-xl border border-slate-700 bg-slate-800 py-2.5 pl-10 pr-4 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
-                        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-500">{% icon "search" "h-4 w-4" %}</span>
+                        <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Buscar produtos..." aria-label="Buscar produtos"
+                               class="w-full rounded-lg bg-white py-2.5 pl-10 pr-11 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">{% icon "search" "h-4 w-4" %}</span>
                     </div>
                 </form>
 
-                <nav class="ml-auto hidden items-center gap-1 text-sm font-medium md:flex" aria-label="Navegação principal">
-                    <a href="{% url 'catalog:promotions' %}"
-                       class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-emerald-400">{% icon "flame" "h-4 w-4" %} Promoções</a>
-                    <a href="{% url 'catalog:home' %}#categorias"
-                       class="rounded-lg px-3 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-emerald-400">Categorias</a>
-                    <a href="{% url 'catalog:promotions' %}#assinar"
-                       class="ml-2 inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-emerald-400">{% icon "bell" "h-4 w-4" %} Criar alerta</a>
+                <nav class="hidden border-t border-white/10 py-2 text-sm font-medium peer-checked:block md:hidden" aria-label="Menu móvel">
+                    <a href="{% url 'catalog:promotions' %}" class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-blue-100 hover:bg-white/10 hover:text-amber-300">{% icon "flame" "h-4 w-4" %} Promoções</a>
+                    <a href="{% url 'catalog:search' %}" class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-blue-100 hover:bg-white/10 hover:text-amber-300">{% icon "package" "h-4 w-4" %} Todos os produtos</a>
+                    <a href="{% url 'catalog:promotions' %}#assinar" class="mt-2 flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-3 py-2.5 font-bold text-blue-950">{% icon "bell" "h-4 w-4" %} Criar alerta</a>
                 </nav>
-
-                <input type="checkbox" id="menu-toggle" class="peer hidden">
-                <label for="menu-toggle" class="ml-auto cursor-pointer rounded-lg border border-slate-700 p-2 md:hidden" aria-label="Abrir menu" role="button" tabindex="0">
-                    <span class="block h-0.5 w-5 bg-slate-300"></span>
-                    <span class="mt-1 block h-0.5 w-5 bg-slate-300"></span>
-                    <span class="mt-1 block h-0.5 w-5 bg-slate-300"></span>
-                </label>
             </div>
-
-            <form action="{% url 'catalog:search' %}" method="get" class="pb-3 md:hidden" role="search">
-                <div class="relative">
-                    <input type="search" name="q" placeholder="Buscar produtos..." aria-label="Buscar produtos"
-                           class="w-full rounded-xl border border-slate-700 bg-slate-800 py-2.5 pl-10 pr-4 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none">
-                    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-500">{% icon "search" "h-4 w-4" %}</span>
-                </div>
-            </form>
-
-            <nav class="hidden border-t border-slate-800 py-3 text-sm font-medium peer-checked:block md:hidden" aria-label="Menu móvel">
-                <a href="{% url 'catalog:promotions' %}" class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-emerald-400">{% icon "flame" "h-4 w-4" %} Promoções</a>
-                <a href="{% url 'catalog:home' %}#categorias" class="block rounded-lg px-3 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-emerald-400">Categorias</a>
-                <a href="{% url 'catalog:promotions' %}#assinar" class="mt-2 flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-3 py-2.5 font-semibold text-slate-950">{% icon "bell" "h-4 w-4" %} Criar alerta</a>
-            </nav>
         </div>
+
+        <!-- Nível 2: barra de categorias -->
+        {% if nav_categories %}
+        <nav class="hidden border-b border-slate-200 bg-white md:block" aria-label="Categorias">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6">
+                <ul class="flex h-11 items-center gap-1 overflow-x-auto text-sm font-medium text-slate-600">
+                    <li>
+                        <a href="{% url 'catalog:promotions' %}" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 font-bold text-red-600 transition hover:bg-red-50">
+                            {% icon "flame" "h-4 w-4" %} Ofertas
+                        </a>
+                    </li>
+                    {% for category in nav_categories %}
+                    <li>
+                        <a href="{{ category.get_absolute_url }}"
+                           class="whitespace-nowrap rounded-md px-3 py-1.5 transition hover:bg-blue-50 hover:text-blue-700">{{ category.name }}</a>
+                    </li>
+                    {% endfor %}
+                    <li>
+                        <a href="{% url 'catalog:search' %}" class="ml-auto inline-flex items-center gap-1 whitespace-nowrap rounded-md px-3 py-1.5 text-blue-700 transition hover:bg-blue-50">
+                            Ver tudo {% icon "arrow-right" "h-3.5 w-3.5" %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {% endif %}
     </header>
 
-    <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6">
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
         {% if messages %}
         <div class="mb-6 space-y-2" role="status">
             {% for message in messages %}
             <div class="flex items-start gap-2 rounded-xl border px-4 py-3 text-sm
-                        {% if message.tags == 'success' %}border-emerald-500/40 bg-emerald-500/10 text-emerald-300
-                        {% elif message.tags == 'error' %}border-red-500/40 bg-red-500/10 text-red-300
-                        {% else %}border-slate-700 bg-slate-800/60 text-slate-200{% endif %}">
+                        {% if message.tags == 'success' %}border-green-200 bg-green-50 text-green-800
+                        {% elif message.tags == 'error' %}border-red-200 bg-red-50 text-red-700
+                        {% else %}border-slate-200 bg-white text-slate-700{% endif %}">
                 <span class="mt-0.5 shrink-0">{% if message.tags == 'success' %}{% icon "check-circle" "h-4 w-4" %}{% elif message.tags == 'error' %}{% icon "alert-triangle" "h-4 w-4" %}{% else %}{% icon "info" "h-4 w-4" %}{% endif %}</span>
                 <p>{{ message }}</p>
             </div>
             {% endfor %}
         </div>
         {% endif %}
+        {% block breadcrumbs %}{% endblock %}
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="border-t border-slate-800 bg-slate-900">
+    <footer class="mt-8 bg-blue-950 text-blue-100">
         <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
             <div class="grid gap-10 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
 
                 <div>
-                    <a href="{% url 'catalog:home' %}" class="flex items-center gap-2 text-lg font-bold tracking-tight">
-                        <span class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-500 text-slate-950">{% icon "zap" "h-5 w-5" %}</span>
-                        <span>Busca<span class="text-emerald-400">Hardware</span></span>
+                    <a href="{% url 'catalog:home' %}" class="flex items-center gap-2 text-lg font-extrabold tracking-tight text-white">
+                        <span class="grid h-9 w-9 place-items-center rounded-xl bg-amber-400 text-blue-950">{% icon "zap" "h-5 w-5" %}</span>
+                        <span>Busca<span class="text-amber-400">Hardware</span></span>
                     </a>
-                    <p class="mt-3 max-w-sm text-sm leading-relaxed text-slate-400">
+                    <p class="mt-3 max-w-sm text-sm leading-relaxed text-blue-200/80">
                         Comparamos preços de hardware nas maiores lojas do Brasil e avisamos você quando o que você quer entra em promoção.
                     </p>
 
                     <form action="{% url 'catalog:subscribe' %}" method="post" class="mt-5 max-w-md">
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ request.path }}">
-                        <label for="newsletter-email" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Receba promoções por e-mail</label>
+                        <label for="newsletter-email" class="text-xs font-semibold uppercase tracking-wide text-blue-300/80">Receba promoções por e-mail</label>
                         <div class="mt-2 flex gap-2">
                             <input type="email" id="newsletter-email" name="email" required placeholder="seu@email.com" aria-label="Seu e-mail"
-                                   class="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none">
-                            <button type="submit" class="shrink-0 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400">
+                                   class="w-full rounded-lg border-0 bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-blue-300/60 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <button type="submit" class="shrink-0 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-bold text-blue-950 transition hover:bg-amber-300">
                                 Quero receber
                             </button>
                         </div>
@@ -111,25 +144,28 @@
                 </div>
 
                 <div>
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Navegar</h3>
-                    <ul class="mt-3 space-y-2 text-sm text-slate-400">
-                        <li><a href="{% url 'catalog:home' %}" class="transition hover:text-emerald-400">Início</a></li>
-                        <li><a href="{% url 'catalog:promotions' %}" class="transition hover:text-emerald-400">Promoções</a></li>
-                        <li><a href="{% url 'catalog:search' %}" class="transition hover:text-emerald-400">Todos os produtos</a></li>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-blue-300/80">Navegar</h3>
+                    <ul class="mt-3 space-y-2 text-sm text-blue-100/90">
+                        <li><a href="{% url 'catalog:home' %}" class="transition hover:text-amber-300">Início</a></li>
+                        <li><a href="{% url 'catalog:promotions' %}" class="transition hover:text-amber-300">Promoções</a></li>
+                        <li><a href="{% url 'catalog:search' %}" class="transition hover:text-amber-300">Todos os produtos</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Lojas monitoradas</h3>
-                    <ul class="mt-3 space-y-2 text-sm text-slate-400">
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-blue-300/80">Lojas monitoradas</h3>
+                    <ul class="mt-3 space-y-2 text-sm text-blue-100/90">
+                        {% for store in active_stores %}
+                        <li>{{ store.name }}</li>
+                        {% empty %}
                         <li>KaBuM!</li>
-                        <li>Pichau</li>
                         <li>Terabyte</li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
 
-            <div class="mt-10 flex flex-col justify-between gap-3 border-t border-slate-800 pt-6 text-xs text-slate-500 sm:flex-row">
+            <div class="mt-10 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-blue-200/70 sm:flex-row">
                 <p>© {% now "Y" %} Busca Hardware. Comparador de preços de informática.</p>
                 <p>Preços coletados automaticamente. Sempre confira o preço final na loja antes de comprar.</p>
             </div>

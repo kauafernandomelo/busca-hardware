@@ -4,21 +4,30 @@
 {% block title %}{{ category.name }} — Busca Hardware{% endblock %}
 {% block meta_description %}{% if category.description %}{{ category.description }}{% else %}Produtos na categoria {{ category.name }} com os menores preços.{% endif %}{% endblock %}
 
+{% block breadcrumbs %}
+<nav class="mb-4 flex flex-wrap items-center gap-2 text-sm text-slate-500" aria-label="Trilha de navegação">
+    <a href="{% url 'catalog:home' %}" class="hover:text-blue-700">Início</a>
+    <span>/</span>
+    <span class="font-medium text-slate-700">{{ category.name }}</span>
+</nav>
+{% endblock %}
+
 {% block content %}
 
-<div class="flex flex-wrap items-end justify-between gap-4">
+<div class="flex flex-wrap items-end justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
     <div>
-        <h1 class="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
-            <span class="grid h-11 w-11 place-items-center rounded-xl bg-slate-900 text-slate-300">{% icon category|category_icon "h-6 w-6" %}</span>
+        <h1 class="flex items-center gap-3 text-2xl font-extrabold tracking-tight text-slate-900">
+            <span class="grid h-11 w-11 place-items-center rounded-xl bg-blue-700 text-white">{% icon category|category_icon "h-6 w-6" %}</span>
             {{ category.name }}
         </h1>
         <p class="mt-1.5 text-sm text-slate-500">{{ total }} produto(s) nesta categoria</p>
     </div>
 
     <form method="get" class="flex items-center gap-2 text-sm">
+        {% if store_slug %}<input type="hidden" name="loja" value="{{ store_slug }}">{% endif %}
         <label for="sort" class="text-slate-500">Ordenar:</label>
         <select name="ord" id="sort" onchange="this.form.submit()"
-                class="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
             <option value="">Nome (A-Z)</option>
             <option value="preco_asc" {% if sort == 'preco_asc' %}selected{% endif %}>Menor preço</option>
             <option value="preco_desc" {% if sort == 'preco_desc' %}selected{% endif %}>Maior preço</option>
@@ -31,12 +40,27 @@
 <div class="mt-4 flex flex-wrap gap-2">
     {% for sub in subcategories %}
     <a href="{{ sub.get_absolute_url }}"
-       class="rounded-full border border-slate-800 bg-slate-900 px-4 py-1.5 text-xs font-semibold text-slate-300 transition hover:border-emerald-500/60 hover:text-emerald-400">
+       class="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-xs font-bold text-slate-600 transition hover:border-blue-400 hover:text-blue-700">
         {{ sub.name }}
     </a>
     {% endfor %}
 </div>
 {% endif %}
+
+<div class="mt-4 flex flex-wrap items-center gap-2">
+    <span class="text-xs font-semibold uppercase tracking-wide text-slate-400">Loja:</span>
+    {% url 'catalog:category' category.slug as cat_url %}
+    <a href="{{ cat_url }}"
+       class="rounded-full border px-3.5 py-1.5 text-xs font-bold transition {% if not store_slug %}border-blue-600 bg-blue-600 text-white{% else %}border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-700{% endif %}">
+        Todas
+    </a>
+    {% for store in active_stores %}
+    <a href="{{ cat_url }}?loja={{ store.slug }}"
+       class="rounded-full border px-3.5 py-1.5 text-xs font-bold transition {% if store_slug == store.slug %}border-blue-600 bg-blue-600 text-white{% else %}border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-700{% endif %}">
+        {{ store.name }}
+    </a>
+    {% endfor %}
+</div>
 
 {% if page_obj.object_list %}
 <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -45,23 +69,11 @@
     {% endfor %}
 </div>
 
-{% if page_obj.has_other_pages %}
-<nav class="mt-8 flex items-center justify-center gap-3 text-sm" aria-label="Paginação">
-    {% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}"
-       class="inline-flex items-center gap-1 rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">{% icon "chevron-left" "h-4 w-4" %} Anterior</a>
-    {% endif %}
-    <span class="text-slate-500">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-    {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}"
-       class="inline-flex items-center gap-1 rounded-lg border border-slate-800 px-4 py-2 transition hover:border-emerald-500 hover:text-emerald-400">Próxima {% icon "chevron-right" "h-4 w-4" %}</a>
-    {% endif %}
-</nav>
-{% endif %}
+{% include "catalog/_pagination.html" %}
 
 {% else %}
-<p class="mt-8 rounded-2xl border border-dashed border-slate-800 p-10 text-center text-sm text-slate-500">
-    Ainda não há produtos nesta categoria. Rode o comando <code class="text-emerald-400">scrape</code> para importar ofertas.
+<p class="mt-8 rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-500">
+    Ainda não há produtos nesta categoria. As ofertas são importadas automaticamente pelo robô de coleta.
 </p>
 {% endif %}
 

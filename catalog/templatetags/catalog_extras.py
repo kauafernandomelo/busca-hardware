@@ -53,11 +53,11 @@ CATEGORY_ICON_RULES = [
 ]
 
 STORE_BADGE_CLASSES = {
-    "kabum": "border-amber-500/40 bg-amber-500/10 text-amber-300",
-    "pichau": "border-red-500/40 bg-red-500/10 text-red-300",
-    "terabyte": "border-sky-500/40 bg-sky-500/10 text-sky-300",
+    "kabum": "border-amber-300 bg-amber-50 text-amber-700",
+    "pichau": "border-red-300 bg-red-50 text-red-700",
+    "terabyte": "border-sky-300 bg-sky-50 text-sky-700",
 }
-DEFAULT_STORE_BADGE = "border-slate-600/60 bg-slate-700/30 text-slate-300"
+DEFAULT_STORE_BADGE = "border-slate-300 bg-slate-100 text-slate-600"
 
 
 @register.simple_tag

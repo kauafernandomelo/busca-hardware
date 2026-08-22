@@ -2,6 +2,15 @@ from django import forms
 
 from .models import Category, PriceAlert, PromoSubscription
 
+INPUT_CLASSES = (
+    "w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm "
+    "text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
+)
+SELECT_CLASSES = (
+    "w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm "
+    "text-slate-800 focus:border-blue-500 focus:outline-none"
+)
+
 
 class PriceAlertForm(forms.ModelForm):
     class Meta:
@@ -13,14 +22,11 @@ class PriceAlertForm(forms.ModelForm):
         }
         widgets = {
             "email": forms.EmailInput(
-                attrs={
-                    "class": "w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none",
-                    "placeholder": "voce@email.com",
-                }
+                attrs={"class": INPUT_CLASSES, "placeholder": "voce@email.com"}
             ),
             "target_price": forms.NumberInput(
                 attrs={
-                    "class": "w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none",
+                    "class": INPUT_CLASSES,
                     "min": "0.01",
                     "step": "0.01",
                     "placeholder": "Ex.: 2500,00",
@@ -44,18 +50,13 @@ class PromoSubscriptionForm(forms.ModelForm):
         fields = ["email", "category", "product", "min_discount"]
         widgets = {
             "email": forms.EmailInput(
-                attrs={
-                    "class": "w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none",
-                    "placeholder": "seu@email.com",
-                }
+                attrs={"class": INPUT_CLASSES, "placeholder": "seu@email.com"}
             ),
-            "category": forms.Select(
-                attrs={"class": "w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none"}
-            ),
+            "category": forms.Select(attrs={"class": SELECT_CLASSES}),
             "product": forms.HiddenInput(),
             "min_discount": forms.Select(
                 choices=[(10, "a partir de 10%"), (20, "a partir de 20%"), (30, "a partir de 30%"), (50, "a partir de 50%")],
-                attrs={"class": "w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm focus:border-emerald-500 focus:outline-none"},
+                attrs={"class": SELECT_CLASSES},
             ),
         }
 
