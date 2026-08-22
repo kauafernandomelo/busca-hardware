@@ -40,8 +40,11 @@ jobs:
       - name: Aplicar migracoes
         run: python manage.py migrate --noinput
 
-      - name: Coletar catalogo e precos (3 lojas)
-        run: python manage.py import_catalog --all
+      - name: Coletar catalogo e precos (lojas configuradas)
+        run: |
+          stores="${{ vars.SCRAPER_STORES || 'kabum,pichau,terabyte' }}"
+          echo "Lojas: $stores"
+          python manage.py import_catalog --stores "$stores"
 
       - name: Verificar alertas de preco
         run: python manage.py check_alerts

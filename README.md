@@ -107,6 +107,10 @@ Configuração única necessária:
 
 Opcional: crie a variável de repositório `SITE_URL` com a URL pública do site para os links dos e-mails de alerta.
 
+### Sobre o Pichau
+
+O WAF do Pichau bloqueia IPs de datacenter (GitHub Actions) mesmo com TLS de navegador — só passa por IP residencial. Por isso o workflow usa a variável de repositório `SCRAPER_STORES` (padrão: `kabum,terabyte`). Para religar o Pichau: contrate um proxy residencial barato (ou registre um runner self-hosted na sua máquina), aponte o scraper para ele e mude a variável para `kabum,pichau,terabyte`.
+
 ### Variáveis de ambiente
 
 | Variável | Onde | Função |

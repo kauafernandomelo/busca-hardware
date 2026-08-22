@@ -37,6 +37,10 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("--store", help="slug da loja (kabum, pichau, terabyte)")
         parser.add_argument(
+            "--stores",
+            help="slugs de lojas separados por vírgula (ex.: kabum,terabyte)",
+        )
+        parser.add_argument(
             "--all", action="store_true", help="executa todas as lojas suportadas"
         )
         parser.add_argument(
@@ -62,10 +66,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options["all"]:
             store_slugs = sorted(SCRAPERS)
+        elif options["stores"]:
+            store_slugs = [
+                s.strip().lower()
+                for s in options["stores"].split(",")
+                if s.strip()
+            ]
         elif options["store"]:
             store_slugs = [options["store"].strip().lower()]
         else:
-            raise CommandError("Informe --store <slug> ou use --all.")
+            raise CommandError("Informe --store <slug>, --stores ou use --all.")
 
         unknown = [s for s in store_slugs if s not in SCRAPERS]
         if unknown:
