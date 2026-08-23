@@ -35,7 +35,9 @@ class Command(BaseCommand):
     )
 
     def add_arguments(self, parser):
-        parser.add_argument("--store", help="slug da loja (kabum, pichau, terabyte)")
+        parser.add_argument(
+            "--store", help="slug da loja (kabum, patoloco, pichau, terabyte, gkinfostore)"
+        )
         parser.add_argument(
             "--stores",
             help="slugs de lojas separados por vírgula (ex.: kabum,terabyte)",
@@ -136,8 +138,10 @@ class Command(BaseCommand):
 
         store = Store.objects.filter(slug=slug).first()
         if store is None and not dry_run:
+            # slug explícito: garante que Store.slug == slug do scraper mesmo
+            # quando o nome não gera o mesmo slug (ex.: "GK Infostore").
             store = Store.objects.create(
-                name=scraper.store_name, website_url=scraper.website_url
+                name=scraper.store_name, website_url=scraper.website_url, slug=slug
             )
 
         stats = {"queries": 0, "products": 0, "offers": 0, "snapshots": 0}

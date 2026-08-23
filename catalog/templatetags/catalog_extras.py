@@ -56,6 +56,8 @@ STORE_BADGE_CLASSES = {
     "kabum": "border-amber-300 bg-amber-50 text-amber-700",
     "pichau": "border-red-300 bg-red-50 text-red-700",
     "terabyte": "border-sky-300 bg-sky-50 text-sky-700",
+    "gkinfostore": "border-emerald-300 bg-emerald-50 text-emerald-700",
+    "patoloco": "border-fuchsia-300 bg-fuchsia-50 text-fuchsia-700",
 }
 DEFAULT_STORE_BADGE = "border-slate-300 bg-slate-100 text-slate-600"
 

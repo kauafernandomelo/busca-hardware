@@ -1,6 +1,6 @@
 # Busca Hardware
 
-Comparador de preços de hardware que monitora **KaBuM!**, **Pichau** e **Terabyte**, detecta promoções automaticamente e avisa por e-mail quando o produto que você quer fica barato. *(Coleta do Pichau pausada — WAF bloqueia IPs de cloud; ver [Deploy](#deploy) › Sobre o Pichau.)*
+Comparador de preços de hardware que monitora **KaBuM!**, **Terabyte**, **GK Infostore** e **Patoloco**, detecta promoções automaticamente e avisa por e-mail quando o produto que você quer fica barato. *(Coleta do Pichau pausada — WAF bloqueia IPs de cloud; ver [Deploy](#deploy) › Sobre o Pichau.)*
 
 ![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-6.1-092E20?logo=django&logoColor=white)
@@ -9,7 +9,7 @@ Comparador de preços de hardware que monitora **KaBuM!**, **Pichau** e **Teraby
 
 ## Funcionalidades
 
-- **Busca unificada** de produtos nas três lojas, com ordenação por preço e desconto
+- **Busca unificada** de produtos nas lojas, com ordenação por preço e desconto
 - **Página de promoções** com os maiores descontos detectados na última coleta
 - **Histórico de preços** com gráfico por dia e destaque para "melhor preço desde o primeiro registro"
 - **Alertas de preço-alvo**: e-mail quando o menor preço fica igual ou abaixo do valor escolhido
@@ -35,10 +35,13 @@ Cada loja tem um scraper próprio em `catalog/scrapers/`, especializado no forma
 | Loja | Estratégia de extração |
 |---|---|
 | KaBuM | JSON embutido em `<script id="__NEXT_DATA__">` |
+| Patoloco | HTML da plataforma Tray (`form.form-ajax-adicionar-ao-carrinho`, `price-old`/`price-new`) |
 | Pichau | Payload RSC (React Server Components) via header `RSC: 1`, extração por bracket-matching |
 | Terabyte | HTML renderizado (`div.product-item` + atributos `data-tss-*`) |
+| GK Infostore | HTML da plataforma Loja Integrada (`div.listagem-item`, preço via atributo `data-sell-price`) |
 
 A classe base (`scrapers/base.py`) centraliza sessão HTTP, headers, retries com backoff e parsing de preços.
+Produtos indisponíveis na loja (sem preço ativo) são descartados na coleta.
 
 ## Como rodar
 
