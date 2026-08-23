@@ -15,10 +15,11 @@
     </span>
 
     <h1 class="relative mt-5 max-w-3xl text-4xl font-black uppercase italic leading-[0.95] tracking-tight sm:text-5xl">
-        Pague sempre o <span class="text-brand">menor preço</span> no seu hardware
+        Aqui só entra produto <span class="text-brand">em promoção</span>
     </h1>
     <p class="relative mt-4 max-w-xl text-neutral-300">
-        Monitoramos KaBuM! e Terabyte para você pagar sempre o menor preço — e ainda avisamos por e-mail quando cair.
+        Varremos KaBuM! e Terabyte e listamos <strong class="font-bold text-white">apenas os produtos que estão em promoção</strong>,
+        comparando o preço entre as lojas. Nada de catálogo infinito: só desconto de verdade.
     </p>
 
     <form action="{% url 'catalog:search' %}" method="get" class="relative mt-7 flex max-w-xl overflow-hidden rounded-md ring-2 ring-white/20 transition focus-within:ring-brand" role="search">
@@ -34,6 +35,33 @@
         <div><dt class="text-[11px] uppercase tracking-widest text-neutral-500">Ofertas ativas</dt><dd class="text-2xl font-black text-green-500">{{ stats.offers }}</dd></div>
         <div><dt class="text-[11px] uppercase tracking-widest text-neutral-500">Lojas monitoradas</dt><dd class="text-2xl font-black">{{ stats.stores }}</dd></div>
     </dl>
+</section>
+
+<section class="mt-12">
+    <h2 class="text-xl font-black uppercase italic tracking-tight text-neutral-900">Como funciona</h2>
+    <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div class="flex items-start gap-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-neutral-100 text-neutral-500">{% icon "search" "h-5 w-5" %}</span>
+            <div>
+                <p class="text-sm font-black uppercase tracking-wide text-neutral-900">1. Coletamos tudo</p>
+                <p class="mt-1 text-sm text-neutral-500">Nosso robô varre as lojas monitoradas a cada 6 horas, produto por produto.</p>
+            </div>
+        </div>
+        <div class="flex items-start gap-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-brand/10 text-brand">{% icon "tag" "h-5 w-5" %}</span>
+            <div>
+                <p class="text-sm font-black uppercase tracking-wide text-neutral-900">2. Só promoção passa</p>
+                <p class="mt-1 text-sm text-neutral-500">Ficam de fora os preços cheios: listamos apenas quem tem desconto real detectado.</p>
+            </div>
+        </div>
+        <div class="flex items-start gap-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-neutral-100 text-neutral-500">{% icon "bell" "h-5 w-5" %}</span>
+            <div>
+                <p class="text-sm font-black uppercase tracking-wide text-neutral-900">3. Comparamos e avisamos</p>
+                <p class="mt-1 text-sm text-neutral-500">Você vê qual loja está mais barata e pode receber um alerta quando surgir nova oferta.</p>
+            </div>
+        </div>
+    </div>
 </section>
 
 <section id="categorias" class="mt-12 scroll-mt-28">

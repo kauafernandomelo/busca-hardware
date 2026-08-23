@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Busca Hardware — Comparador de preços de informática{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Compare preços de hardware e informática nas maiores lojas do Brasil. Encontre os menores preços e promoções.{% endblock %}">
+    <meta name="description" content="{% block meta_description %}Só promoção: coletamos os produtos em promoção na KaBuM! e Terabyte, comparamos os preços entre as lojas e avisamos você por e-mail. Encontre o menor desconto em hardware.{% endblock %}">
     <meta property="og:title" content="{% block og_title %}Busca Hardware{% endblock %}">
     <meta property="og:type" content="website">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563eb'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E">
@@ -134,7 +134,8 @@
                         <span>Busca<span class="text-brand">Hardware</span></span>
                     </a>
                     <p class="mt-3 max-w-sm text-sm leading-relaxed text-neutral-400">
-                        Comparamos preços de hardware nas maiores lojas do Brasil e avisamos você quando o que você quer entra em promoção.
+                        Listamos apenas produtos que estão <strong class="font-semibold text-neutral-200">em promoção</strong> nas lojas monitoradas
+                        e comparamos o preço entre elas. Assine e receba um aviso quando surgir uma boa oferta do seu interesse.
                     </p>
 
                     <form action="{% url 'catalog:subscribe' %}" method="post" class="mt-5 max-w-md">
@@ -174,8 +175,8 @@
             </div>
 
             <div class="mt-10 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-neutral-500 sm:flex-row">
-                <p>© {% now "Y" %} Busca Hardware. Comparador de preços de informática.</p>
-                <p>Preços coletados automaticamente. Sempre confira o preço final na loja antes de comprar.</p>
+                <p>© {% now "Y" %} Busca Hardware. Comparador de promoções de hardware.</p>
+                <p>Listamos só o que está em promoção. Sempre confira o preço final na loja antes de comprar.</p>
             </div>
         </div>
     </footer>
