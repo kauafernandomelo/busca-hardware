@@ -54,6 +54,48 @@ theme/
 render.yaml
 ```
 
+## Como rodar
+
+```bash
+# Clone o repositório
+git clone https://github.com/kauafernandomelo/busca-hardware.git
+cd busca-hardware
+
+# Ambiente virtual
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate     # Linux/macOS
+
+# Dependências
+pip install -r requirements.txt
+
+# Variáveis de ambiente (crie um .env na raiz)
+# DJANGO_SECRET_KEY=<sua-chave>
+# DJANGO_DEBUG=1
+
+# Banco de dados
+python manage.py migrate
+
+# Build do CSS (primeira vez)
+cd theme/static_src && npm install && cd ../..
+python manage.py tailwind build
+
+# Popular catálogo (~500 produtos)
+python manage.py import_catalog --all
+
+# Rodar
+python manage.py runserver
+```
+
+## Comandos úteis
+
+| Comando | Função |
+|---|---|
+| `import_catalog --all` | Importa catálogo completo |
+| `scrape --store kabum --query "rtx 4070"` | Coleta por termo de busca |
+| `check_alerts` | Verifica alertas e envia e-mails |
+| `check_promotions` | Detecta promoções e notifica assinantes |
+
 ## Licença
 
 [MIT](LICENSE)
