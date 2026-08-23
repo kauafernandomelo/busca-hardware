@@ -96,6 +96,3 @@ python manage.py runserver
 | `check_alerts` | Verifica alertas e envia e-mails |
 | `check_promotions` | Detecta promoções e notifica assinantes |
 
-## Licença
-
-[MIT](LICENSE)
