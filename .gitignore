@@ -28,3 +28,5 @@ checkpoint.ps1
 # OS
 Thumbs.db
 .DS_Store
+
+.github
