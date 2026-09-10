@@ -10,6 +10,10 @@ Comparador de preços de hardware que monitora **KaBuM!**, **Terabyte**, **GK In
 
 Sistema completo de monitoramento de preços com coleta automatizada, alertas por e-mail e interface de marketplace.
 
+Site no Ar:https://busca-hardware.onrender.com/
+<img width="1791" height="944" alt="image" src="https://github.com/user-attachments/assets/2e9a7b99-47c4-4d07-9226-7c0bb651c886" />
+
+
 ## Funcionalidades
 
 - Busca unificada de produtos com ordenação por preço e desconto
